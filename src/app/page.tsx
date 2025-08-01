@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { playAnimalSound } from '@/utils/audio';
+import { triggerMilestoneConfetti, triggerConfetti, triggerContinuousConfetti } from '@/utils/confetti';
 
 interface Animal {
   id: number;
@@ -18,6 +19,9 @@ const AnimalCelebration = ({ animalName, count, emoji }: { animalName: string; c
   const [isVisible, setIsVisible] = useState(true);
   
   useEffect(() => {
+    // Trigger additional confetti when celebration appears
+    setTimeout(() => triggerConfetti('achievement'), 500);
+    
     const timer = setTimeout(() => setIsVisible(false), 3000);
     return () => clearTimeout(timer);
   }, []);
@@ -32,23 +36,28 @@ const AnimalCelebration = ({ animalName, count, emoji }: { animalName: string; c
       {/* Main celebration for mobile */}
       <div className="bg-gradient-to-r from-pink-600 to-blue-600 rounded-3xl p-10 shadow-2xl animate-celebration-bounce animate-magical-glow">
         <div className="text-center text-white">
-          <div className="text-9xl mb-6 animate-bounce">{emoji}</div>
-          <div className="text-8xl font-black mb-4 animate-pulse">{count}</div>
+          <div className="text-9xl mb-6 animate-celebration-explosion">{emoji}</div>
+          <div className="text-8xl font-black mb-4 animate-confetti-shake">{count}</div>
+          <div className="text-4xl font-bold mb-4 text-shadow-lg animate-rainbow-shift">
+            {count >= 50 ? '🎆 INCREDIBLE! 🎆' : count >= 25 ? '🌟 AMAZING! 🌟' : count >= 10 ? '✨ FANTASTIC! ✨' : '🎉 AWESOME! 🎉'}
+          </div>
           <div className="text-4xl font-bold mb-4 text-shadow-lg">WOW! {count} {animalName}s!</div>
-          <div className="text-5xl animate-bounce">🎉 FANTASTIC! 🎉</div>
+          <div className="text-5xl animate-milestone-burst">
+            {count >= 50 ? '🚀 LEGENDARY! 🚀' : count >= 25 ? '👑 CHAMPION! 👑' : '🎉 FANTASTIC! 🎉'}
+          </div>
           <div className="text-3xl animate-pulse mt-2">🌟 YOU&apos;RE AWESOME! 🌟</div>
         </div>
       </div>
       
       {/* Super Exciting Celebration Particles */}
-      <div className="absolute top-1/4 left-1/4 text-6xl animate-bounce">🎊</div>
-      <div className="absolute top-1/4 right-1/4 text-6xl animate-bounce" style={{ animationDelay: '0.3s' }}>🎉</div>
-      <div className="absolute bottom-1/4 left-1/4 text-6xl animate-bounce" style={{ animationDelay: '0.6s' }}>✨</div>
-      <div className="absolute bottom-1/4 right-1/4 text-6xl animate-bounce" style={{ animationDelay: '0.9s' }}>⭐</div>
-      <div className="absolute top-1/2 left-1/8 text-5xl animate-bounce" style={{ animationDelay: '0.2s' }}>🌈</div>
-      <div className="absolute top-1/2 right-1/8 text-5xl animate-bounce" style={{ animationDelay: '0.7s' }}>💫</div>
-      <div className="absolute top-1/3 left-1/2 text-5xl animate-bounce" style={{ animationDelay: '0.4s' }}>🦄</div>
-      <div className="absolute bottom-1/3 right-1/2 text-5xl animate-bounce" style={{ animationDelay: '1.1s' }}>🎪</div>
+      <div className="absolute top-1/4 left-1/4 text-6xl animate-confetti-fall">🎊</div>
+      <div className="absolute top-1/4 right-1/4 text-6xl animate-milestone-burst" style={{ animationDelay: '0.3s' }}>🎉</div>
+      <div className="absolute bottom-1/4 left-1/4 text-6xl animate-celebration-explosion" style={{ animationDelay: '0.6s' }}>✨</div>
+      <div className="absolute bottom-1/4 right-1/4 text-6xl animate-confetti-shake" style={{ animationDelay: '0.9s' }}>⭐</div>
+      <div className="absolute top-1/2 left-1/8 text-5xl animate-rainbow-shift" style={{ animationDelay: '0.2s' }}>🌈</div>
+      <div className="absolute top-1/2 right-1/8 text-5xl animate-sparkle-blue-pink" style={{ animationDelay: '0.7s' }}>💫</div>
+      <div className="absolute top-1/3 left-1/2 text-5xl animate-celebration-explosion" style={{ animationDelay: '0.4s' }}>🦄</div>
+      <div className="absolute bottom-1/3 right-1/2 text-5xl animate-milestone-burst" style={{ animationDelay: '1.1s' }}>🎪</div>
     </div>
   );
 };
@@ -99,6 +108,30 @@ const CornerScore = ({ score, animalCounts }: { score: number; animalCounts: Rec
   );
 };
 
+// Special Confetti Overlay Component for Major Milestones
+const ConfettiOverlay = ({ isActive }: { isActive: boolean }) => {
+  if (!isActive) return null;
+
+  return (
+    <div className="fixed inset-0 z-40 pointer-events-none overflow-hidden">
+      {/* Falling confetti pieces */}
+      {Array.from({ length: 20 }).map((_, i) => (
+        <div
+          key={i}
+          className="absolute text-4xl animate-confetti-fall"
+          style={{
+            left: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 2}s`,
+            animationDuration: `${3 + Math.random() * 2}s`,
+          }}
+        >
+          {['🎊', '🎉', '✨', '⭐', '🌟', '💫', '🎈', '🎁'][Math.floor(Math.random() * 8)]}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export default function Home() {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [score, setScore] = useState(0);
@@ -106,6 +139,7 @@ export default function Home() {
   const [celebrating, setCelebrating] = useState<string | null>(null);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [playingSound, setPlayingSound] = useState<number | null>(null);
+  const [showConfettiOverlay, setShowConfettiOverlay] = useState(false);
 
   const animalData = useMemo((): Omit<Animal, 'id' | 'x' | 'y'>[] => [
     { name: 'Lion', emoji: '🦁', sound: 'roar', color: '' },
@@ -198,16 +232,41 @@ export default function Home() {
     playAnimalSound(animal.sound);
     
     // Update total score
-    setScore(prev => prev + 1);
+    setScore(prev => {
+      const newScore = prev + 1;
+      
+      // Trigger confetti for overall score milestones
+      if (newScore % 25 === 0) {
+        triggerConfetti('fireworks');
+        setShowConfettiOverlay(true);
+        setTimeout(() => setShowConfettiOverlay(false), 4000);
+      } else if (newScore % 10 === 0) {
+        triggerConfetti('rainbow');
+      } else if (newScore % 5 === 0) {
+        triggerConfetti('milestone');
+      }
+      
+      return newScore;
+    });
     
     // Update individual animal count
     setAnimalCounts(prev => {
       const newCount = (prev[animal.name] || 0) + 1;
       const updatedCounts = { ...prev, [animal.name]: newCount };
       
-      // Check if this animal hit a multiple of 10
-      if (newCount % 10 === 0) {
+      // Check for milestone celebrations with confetti
+      if (newCount % 5 === 0) {
         setCelebrating(animal.name);
+        // Trigger appropriate confetti based on milestone
+        triggerMilestoneConfetti(newCount);
+        
+        // Special continuous confetti for major milestones
+        if (newCount % 25 === 0) {
+          triggerContinuousConfetti(2000);
+          setShowConfettiOverlay(true);
+          setTimeout(() => setShowConfettiOverlay(false), 3000);
+        }
+        
         // Clear celebration after 3 seconds
         setTimeout(() => setCelebrating(null), 3000);
       }
@@ -261,6 +320,9 @@ export default function Home() {
         <div className="pt-6 px-4 z-30 relative">
           <CornerScore score={score} animalCounts={animalCounts} />
         </div>
+
+      {/* Confetti Overlay for Major Milestones */}
+      <ConfettiOverlay isActive={showConfettiOverlay} />
 
       {/* Mobile Animal Celebration */}
       {celebrating && (
