@@ -76,15 +76,58 @@ export default function Home() {
     { name: 'Dinosaur', emoji: '🦕', sound: 'rawr', color: 'bg-gradient-to-br from-green-400 to-blue-500' },
   ], []);
 
+  // Function to check if a position is far enough from existing animals
+  const isPositionValid = useCallback((x: number, y: number, existingAnimals: Animal[], minDistance: number = 200) => {
+    return !existingAnimals.some(animal => {
+      const distance = Math.sqrt((x - animal.x) ** 2 + (y - animal.y) ** 2);
+      return distance < minDistance;
+    });
+  }, []);
+
+  // Function to generate a valid position for an animal
+  const generateValidPosition = useCallback((existingAnimals: Animal[], minDistance: number = 200) => {
+    const maxAttempts = 100;
+    let attempts = 0;
+    
+    // Use current window size or fallback to reasonable defaults
+    const maxWidth = Math.min(windowSize.width || 800, 800) - 160;
+    const maxHeight = (windowSize.height || 600) - 400;
+    const minY = 200;
+    
+    while (attempts < maxAttempts) {
+      const x = Math.random() * maxWidth;
+      const y = Math.random() * maxHeight + minY;
+      
+      if (isPositionValid(x, y, existingAnimals, minDistance)) {
+        return { x, y };
+      }
+      attempts++;
+    }
+    
+    // If we can't find a valid position, return a random one
+    return {
+      x: Math.random() * maxWidth,
+      y: Math.random() * maxHeight + minY,
+    };
+  }, [windowSize.width, windowSize.height, isPositionValid]);
+
   const initializeAnimals = useCallback(() => {
-    const initialAnimals = animalData.map((animal, index) => ({
-      ...animal,
-      id: index,
-      x: Math.random() * (Math.min(window.innerWidth, 800) - 160),
-      y: Math.random() * (window.innerHeight - 400) + 200, // Keep away from header
-    }));
+    if (windowSize.width === 0 || windowSize.height === 0) return; // Wait for window size
+    
+    const initialAnimals: Animal[] = [];
+    
+    animalData.forEach((animal, index) => {
+      const position = generateValidPosition(initialAnimals, 200);
+      initialAnimals.push({
+        ...animal,
+        id: index,
+        x: position.x,
+        y: position.y,
+      });
+    });
+    
     setAnimals(initialAnimals);
-  }, [animalData]);
+  }, [animalData, generateValidPosition, windowSize.width, windowSize.height]);
 
   useEffect(() => {
     const updateWindowSize = () => {
@@ -96,10 +139,16 @@ export default function Home() {
 
     updateWindowSize();
     window.addEventListener('resize', updateWindowSize);
-    initializeAnimals();
 
     return () => window.removeEventListener('resize', updateWindowSize);
-  }, [initializeAnimals]);
+  }, []);
+
+  // Initialize animals when window size is available
+  useEffect(() => {
+    if (windowSize.width > 0 && windowSize.height > 0) {
+      initializeAnimals();
+    }
+  }, [windowSize.width, windowSize.height, initializeAnimals]);
 
   const handleAnimalClick = (animal: Animal) => {
     // Set visual feedback
@@ -127,13 +176,12 @@ export default function Home() {
       
       // After pop animation, respawn the animal in a new location
       setTimeout(() => {
-        const newX = Math.random() * (Math.min(windowSize.width, 800) - 160);
-        const newY = Math.random() * (windowSize.height - 400) + 200;
+        const newPosition = generateValidPosition(animals.filter(a => a.id !== animal.id), 200);
         
         setAnimals(prev => [...prev, {
           ...animal,
-          x: newX,
-          y: newY,
+          x: newPosition.x,
+          y: newPosition.y,
         }]);
         
         // Add fade-in animation to the newly spawned animal
@@ -148,7 +196,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-orange-400 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-pink-400 to-blue-500 relative overflow-hidden">
       {/* Birthday Header */}
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 w-full px-4">
         <h1 className="text-3xl md:text-5xl font-bold text-center bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-opacity-95 rounded-2xl px-6 py-4 shadow-2xl text-white backdrop-blur-sm">
