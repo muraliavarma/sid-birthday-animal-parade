@@ -74,17 +74,17 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
     setIsAnimating(true);
     const timer = setTimeout(() => setIsAnimating(false), 500);
     return () => clearTimeout(timer);
-  }, [score]);
+  }, [score, animalCounts]);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-pink-50 via-white to-blue-50 backdrop-blur-md shadow-lg border-b-2 border-pink-200/50 w-full">
       <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 w-full max-w-none">
         {/* Total Score - Enhanced */}
         <div className="flex items-center gap-3 sm:gap-4 bg-gradient-to-r from-pink-100 to-blue-100 rounded-2xl px-4 py-3 shadow-sm border border-pink-200/30">
-          <div className="text-3xl sm:text-4xl animate-pulse drop-shadow-lg">🏆</div>
+          <div className="text-3xl sm:text-4xl drop-shadow-lg">🏆</div>
           <div className="flex flex-col">
             <div className="text-sm sm:text-base font-semibold text-gray-700">Total Score</div>
-            <div className={`text-2xl sm:text-3xl font-black bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent drop-shadow-sm ${isAnimating ? 'animate-bounce' : 'animate-pulse'}`}>
+            <div className={`text-2xl sm:text-3xl font-black bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent drop-shadow-sm transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
               {score}
             </div>
           </div>
@@ -92,25 +92,21 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
           {/* Achievement badges - enhanced */}
           <div className="flex gap-1 sm:gap-2 ml-2">
             {score >= 5 && <span className="text-xl sm:text-2xl animate-sparkle-blue-pink drop-shadow-lg">🌟</span>}
-            {score >= 10 && <span className="text-xl sm:text-2xl animate-bounce drop-shadow-lg">🏆</span>}
+            {score >= 10 && <span className="text-xl sm:text-2xl drop-shadow-lg">🏆</span>}
             {score >= 20 && <span className="text-xl sm:text-2xl animate-rainbow-shift drop-shadow-lg">👑</span>}
             {score >= 30 && <span className="text-xl sm:text-2xl animate-spin-slow drop-shadow-lg">🚀</span>}
           </div>
         </div>
         
         {/* Individual Animal Counts - Enhanced */}
-        <div className="flex gap-2 sm:gap-3 overflow-x-auto">
+        <div className="flex gap-3 sm:gap-4 overflow-x-auto">
           {animalData.map((animal) => {
             const count = animalCounts[animal.name] || 0;
             const isActive = count > 0;
             return (
-              <div key={animal.name} className={`flex items-center gap-2 px-2 py-1 min-w-fit flex-shrink-0 transition-all duration-300 ${
-                isActive 
-                  ? 'animate-bubble-float' 
-                  : ''
-              }`}>
-                <span className={`text-2xl sm:text-3xl transition-all duration-300 ${
-                  isActive ? 'animate-bounce drop-shadow-lg' : 'opacity-60'
+              <div key={`${animal.name}-${count}`} className="flex items-center gap-2 px-1 py-1 min-w-fit flex-shrink-0">
+                <span className={`text-2xl sm:text-3xl transition-all duration-500 ${
+                  isActive ? 'drop-shadow-lg scale-110' : 'opacity-60 scale-100'
                 }`}>{animal.emoji}</span>
                 <span className={`text-lg sm:text-xl font-black transition-all duration-300 ${
                   isActive 
