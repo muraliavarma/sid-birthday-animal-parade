@@ -13,8 +13,38 @@ interface Animal {
   y: number;
 }
 
+// Animal Celebration Component
+const AnimalCelebration = ({ animalName, count, emoji }: { animalName: string; count: number; emoji: string }) => {
+  const [isVisible, setIsVisible] = useState(true);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
+      <div className="bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-3xl p-8 shadow-2xl backdrop-blur-sm animate-celebration-bounce">
+        <div className="text-center text-white">
+          <div className="text-8xl mb-4 animate-celebration-float">{emoji}</div>
+          <div className="text-4xl font-bold mb-2">{count} {animalName}s!</div>
+          <div className="text-2xl">🎉 AMAZING! 🎉</div>
+          
+          {/* Celebration particles */}
+          <div className="absolute -top-8 -left-8 text-yellow-300 animate-celebration-float text-4xl">🎊</div>
+          <div className="absolute -top-12 -right-8 text-pink-300 animate-celebration-float text-4xl" style={{ animationDelay: '0.3s' }}>🎉</div>
+          <div className="absolute -bottom-8 -left-8 text-blue-300 animate-celebration-float text-4xl" style={{ animationDelay: '0.6s' }}>✨</div>
+          <div className="absolute -bottom-12 -right-8 text-purple-300 animate-celebration-float text-4xl" style={{ animationDelay: '0.9s' }}>⭐</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Corner Score Component
-const CornerScore = ({ score }: { score: number }) => {
+const CornerScore = ({ score, animalCounts }: { score: number; animalCounts: Record<string, number> }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   
   useEffect(() => {
@@ -27,14 +57,25 @@ const CornerScore = ({ score }: { score: number }) => {
     <div className="fixed bottom-6 right-6 z-50" style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 50 }}>
       <div className="bg-gradient-to-br from-blue-500 via-pink-500 to-blue-600 rounded-3xl p-6 shadow-2xl backdrop-blur-sm">
         <div className="text-center">
-          {/* Large score number */}
-          <div className="relative">
-            <span className={`text-5xl md:text-7xl font-bold text-white drop-shadow-2xl ${isAnimating ? 'animate-celebration-bounce scale-125' : ''} transition-all duration-300`}>
+          {/* Large total score number */}
+          <div className="relative mb-4">
+            <span className={`text-4xl md:text-6xl font-bold text-white drop-shadow-2xl ${isAnimating ? 'animate-celebration-bounce scale-125' : ''} transition-all duration-300`}>
               {score}
             </span>
+            <div className="text-sm text-white/80 mt-1">Total</div>
           </div>
           
-          {/* Celebration emojis based on score */}
+          {/* Individual animal counts */}
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            {Object.entries(animalCounts).map(([animalName, count]) => (
+              <div key={animalName} className="bg-white/20 rounded-lg p-2 backdrop-blur-sm">
+                <div className="text-white text-xs font-semibold">{animalName}</div>
+                <div className="text-white text-lg font-bold">{count}</div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Celebration emojis based on total score */}
           <div className="flex justify-center mt-3 space-x-2">
             {score >= 1 && <span className="text-lg animate-celebration-float">🎉</span>}
             {score >= 5 && <span className="text-lg animate-celebration-float" style={{ animationDelay: '0.2s' }}>🎊</span>}
@@ -64,6 +105,8 @@ const CornerScore = ({ score }: { score: number }) => {
 export default function Home() {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [score, setScore] = useState(0);
+  const [animalCounts, setAnimalCounts] = useState<Record<string, number>>({});
+  const [celebrating, setCelebrating] = useState<string | null>(null);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [playingSound, setPlayingSound] = useState<number | null>(null);
 
@@ -157,8 +200,23 @@ export default function Home() {
     // Play the animal sound
     playAnimalSound(animal.sound);
     
-    // Update score
+    // Update total score
     setScore(prev => prev + 1);
+    
+    // Update individual animal count
+    setAnimalCounts(prev => {
+      const newCount = (prev[animal.name] || 0) + 1;
+      const updatedCounts = { ...prev, [animal.name]: newCount };
+      
+      // Check if this animal hit a multiple of 10
+      if (newCount % 10 === 0) {
+        setCelebrating(animal.name);
+        // Clear celebration after 3 seconds
+        setTimeout(() => setCelebrating(null), 3000);
+      }
+      
+      return updatedCounts;
+    });
     
     // Clear visual feedback after sound duration
     setTimeout(() => setPlayingSound(null), 800);
@@ -208,7 +266,16 @@ export default function Home() {
       </div>
 
       {/* Corner Score */}
-      <CornerScore score={score} />
+      <CornerScore score={score} animalCounts={animalCounts} />
+
+      {/* Animal Celebration */}
+      {celebrating && (
+        <AnimalCelebration 
+          animalName={celebrating} 
+          count={animalCounts[celebrating]} 
+          emoji={animalData.find(animal => animal.name === celebrating)?.emoji || '🎉'} 
+        />
+      )}
 
       {/* Animals */}
       <div className="relative w-full h-screen">
