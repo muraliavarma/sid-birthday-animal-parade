@@ -13,8 +13,43 @@ interface Animal {
   y: number;
 }
 
-// Corner Score Component
-const CornerScore = ({ score }: { score: number }) => {
+// Mobile Celebration Component
+const AnimalCelebration = ({ animalName, count, emoji }: { animalName: string; count: number; emoji: string }) => {
+  const [isVisible, setIsVisible] = useState(true);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center">
+      {/* Mobile celebration overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-pink-400/50 to-blue-400/50 animate-pulse"></div>
+      
+      {/* Main celebration for mobile */}
+      <div className="bg-gradient-to-r from-pink-500 to-blue-500 rounded-3xl p-8 shadow-xl animate-bounce">
+        <div className="text-center text-white">
+          <div className="text-8xl mb-4">{emoji}</div>
+          <div className="text-5xl font-black mb-2">{count}</div>
+          <div className="text-2xl font-bold mb-2">{animalName}s!</div>
+          <div className="text-3xl">🌟 AMAZING! 🌟</div>
+        </div>
+      </div>
+      
+      {/* Simple mobile particles */}
+      <div className="absolute top-1/4 left-1/4 text-4xl animate-bounce text-pink-300">🎊</div>
+      <div className="absolute top-1/4 right-1/4 text-4xl animate-bounce text-blue-300" style={{ animationDelay: '0.3s' }}>🎉</div>
+      <div className="absolute bottom-1/4 left-1/4 text-4xl animate-bounce text-pink-400" style={{ animationDelay: '0.6s' }}>✨</div>
+      <div className="absolute bottom-1/4 right-1/4 text-4xl animate-bounce text-blue-400" style={{ animationDelay: '0.9s' }}>⭐</div>
+    </div>
+  );
+};
+
+// Mobile Score Display Component
+const CornerScore = ({ score, animalCounts }: { score: number; animalCounts: Record<string, number> }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   
   useEffect(() => {
@@ -24,39 +59,36 @@ const CornerScore = ({ score }: { score: number }) => {
   }, [score]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50" style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 50 }}>
-      <div className="bg-gradient-to-br from-blue-500 via-pink-500 to-blue-600 rounded-3xl p-6 shadow-2xl backdrop-blur-sm">
-        <div className="text-center">
-          {/* Large score number */}
-          <div className="relative">
-            <span className={`text-5xl md:text-7xl font-bold text-white drop-shadow-2xl ${isAnimating ? 'animate-celebration-bounce scale-125' : ''} transition-all duration-300`}>
+    <div className="fixed top-4 left-4 right-4 z-40">
+      {/* Mobile-optimized score display */}
+      <div className="bg-gradient-to-r from-pink-400 to-blue-400 rounded-2xl p-4 shadow-lg">
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-center">
+            <div className="text-lg font-bold text-white">🎯 Score</div>
+            <div className={`text-4xl font-black text-white ${isAnimating ? 'animate-bounce' : ''}`}>
               {score}
-            </span>
+            </div>
           </div>
           
-          {/* Celebration emojis based on score */}
-          <div className="flex justify-center mt-3 space-x-2">
-            {score >= 1 && <span className="text-lg animate-celebration-float">🎉</span>}
-            {score >= 5 && <span className="text-lg animate-celebration-float" style={{ animationDelay: '0.2s' }}>🎊</span>}
-            {score >= 10 && <span className="text-lg animate-celebration-float" style={{ animationDelay: '0.4s' }}>🏆</span>}
-            {score >= 15 && <span className="text-lg animate-celebration-float" style={{ animationDelay: '0.6s' }}>👑</span>}
-            {score >= 20 && <span className="text-lg animate-celebration-float" style={{ animationDelay: '0.8s' }}>💎</span>}
-            {score >= 25 && <span className="text-lg animate-celebration-float" style={{ animationDelay: '1s' }}>🌈</span>}
-            {score >= 30 && <span className="text-lg animate-celebration-float" style={{ animationDelay: '1.2s' }}>🚀</span>}
+          {/* Achievement badges */}
+          <div className="flex gap-1">
+            {score >= 5 && <span className="text-2xl animate-pulse">🌟</span>}
+            {score >= 10 && <span className="text-2xl animate-bounce">🏆</span>}
+            {score >= 20 && <span className="text-2xl animate-pulse">👑</span>}
+            {score >= 30 && <span className="text-2xl animate-bounce">🚀</span>}
           </div>
         </div>
+        
+        {/* Animal counts in a single row */}
+        <div className="flex justify-between gap-1">
+          {Object.entries(animalCounts).map(([animalName, count]) => (
+            <div key={animalName} className="bg-white/30 rounded-xl px-2 py-1 text-center min-w-0 flex-1">
+              <div className="text-white text-xs font-bold truncate">{animalName}</div>
+              <div className="text-white text-lg font-black">{count}</div>
+            </div>
+          ))}
+        </div>
       </div>
-      
-      {/* Floating celebration particles - moved away from score */}
-      {isAnimating && (
-        <>
-          <div className="absolute -top-8 left-1/4 text-blue-300 animate-celebration-float">🎈</div>
-          <div className="absolute -top-12 right-1/4 text-pink-300 animate-celebration-float" style={{ animationDelay: '0.3s' }}>🎈</div>
-          <div className="absolute -top-6 left-1/2 text-blue-400 animate-celebration-float" style={{ animationDelay: '0.6s' }}>🎈</div>
-          <div className="absolute -top-16 left-1/3 text-pink-400 animate-celebration-float" style={{ animationDelay: '0.9s' }}>✨</div>
-          <div className="absolute -top-20 right-1/3 text-blue-500 animate-celebration-float" style={{ animationDelay: '1.2s' }}>⭐</div>
-        </>
-      )}
     </div>
   );
 };
@@ -64,6 +96,8 @@ const CornerScore = ({ score }: { score: number }) => {
 export default function Home() {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [score, setScore] = useState(0);
+  const [animalCounts, setAnimalCounts] = useState<Record<string, number>>({});
+  const [celebrating, setCelebrating] = useState<string | null>(null);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [playingSound, setPlayingSound] = useState<number | null>(null);
 
@@ -157,8 +191,23 @@ export default function Home() {
     // Play the animal sound
     playAnimalSound(animal.sound);
     
-    // Update score
+    // Update total score
     setScore(prev => prev + 1);
+    
+    // Update individual animal count
+    setAnimalCounts(prev => {
+      const newCount = (prev[animal.name] || 0) + 1;
+      const updatedCounts = { ...prev, [animal.name]: newCount };
+      
+      // Check if this animal hit a multiple of 10
+      if (newCount % 10 === 0) {
+        setCelebrating(animal.name);
+        // Clear celebration after 3 seconds
+        setTimeout(() => setCelebrating(null), 3000);
+      }
+      
+      return updatedCounts;
+    });
     
     // Clear visual feedback after sound duration
     setTimeout(() => setPlayingSound(null), 800);
@@ -196,32 +245,41 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-pink-400 to-blue-500 relative overflow-hidden">
-      {/* Birthday Header */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 w-full px-4">
-        <h1 className="text-3xl md:text-5xl font-bold text-center bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-opacity-95 rounded-2xl px-6 py-4 shadow-2xl text-white backdrop-blur-sm">
-          🎉 HAPPY 5TH BIRTHDAY SID! 🎉
+    <div className="min-h-screen bg-gradient-to-b from-pink-200 via-blue-200 to-pink-300 relative overflow-hidden">
+      {/* Mobile Birthday Header */}
+      <div className="pt-20 px-4 text-center z-30 relative">
+        <h1 className="text-3xl font-black text-white mb-2 bg-gradient-to-r from-pink-500 to-blue-500 rounded-2xl px-6 py-4 shadow-lg">
+          🎂 SID&apos;S 5TH BIRTHDAY! 🎂
         </h1>
-        <div className="text-center mt-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-opacity-90 rounded-xl px-6 py-3 mx-auto max-w-md text-white backdrop-blur-sm shadow-lg">
-          <p className="text-lg font-semibold">Tap the animals to hear them!</p>
+        <div className="bg-gradient-to-r from-blue-400 to-pink-400 rounded-xl px-4 py-2 text-white shadow-md">
+          <p className="text-lg font-bold">🌟 Tap the Animals! 🌟</p>
         </div>
       </div>
 
-      {/* Corner Score */}
-      <CornerScore score={score} />
+      {/* Mobile Score Display */}
+      <CornerScore score={score} animalCounts={animalCounts} />
 
-      {/* Animals */}
-      <div className="relative w-full h-screen">
+      {/* Mobile Animal Celebration */}
+      {celebrating && (
+        <AnimalCelebration 
+          animalName={celebrating} 
+          count={animalCounts[celebrating]} 
+          emoji={animalData.find(animal => animal.name === celebrating)?.emoji || '🎉'} 
+        />
+      )}
+
+      {/* Mobile-Optimized Animal Friends */}
+      <div className="relative w-full h-screen pt-32">
         {animals.map((animal) => (
           <div
             key={animal.id}
             id={`animal-${animal.id}`}
-            className={`absolute cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 animal-button ${animal.color} rounded-full w-32 h-32 md:w-40 md:h-40 flex items-center justify-center text-6xl md:text-7xl shadow-2xl animate-float ${
-              playingSound === animal.id ? 'animate-pulse-glow' : ''
+            className={`absolute cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 ${animal.color} rounded-full w-24 h-24 flex items-center justify-center text-5xl shadow-xl animate-float ${
+              playingSound === animal.id ? 'animate-pulse scale-110' : ''
             }`}
             style={{
-              left: `${Math.min(animal.x, windowSize.width - 160)}px`,
-              top: `${Math.max(animal.y, 200)}px`,
+              left: `${Math.min(animal.x, windowSize.width - 96)}px`,
+              top: `${Math.max(animal.y, 140)}px`,
               animationDelay: `${animal.id * 0.5}s`,
             }}
             onClick={() => handleAnimalClick(animal)}
@@ -231,26 +289,18 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Floating balloons */}
-      <div className="absolute top-20 right-4 md:right-10 text-4xl md:text-6xl animate-bounce text-yellow-300">🎈</div>
-      <div className="absolute top-40 right-8 md:right-20 text-3xl md:text-5xl animate-bounce text-pink-300" style={{ animationDelay: '0.5s' }}>🎈</div>
-      <div className="absolute top-60 right-2 md:right-5 text-2xl md:text-4xl animate-bounce text-orange-300" style={{ animationDelay: '1s' }}>🎈</div>
-
-      {/* Cake */}
-      <div className="absolute bottom-4 md:bottom-10 left-1/2 transform -translate-x-1/2 text-4xl md:text-6xl animate-pulse">🎂</div>
-
-      {/* Well-distributed sparkles across the page */}
-      <div className="absolute top-1/6 left-1/6 text-2xl animate-sparkle text-yellow-300">✨</div>
-      <div className="absolute top-1/4 right-1/4 text-xl animate-sparkle text-pink-300" style={{ animationDelay: '1s' }}>✨</div>
-      <div className="absolute top-1/3 left-1/3 text-lg animate-sparkle text-orange-300" style={{ animationDelay: '2s' }}>✨</div>
-      <div className="absolute top-1/2 left-1/8 text-xl animate-sparkle text-purple-300" style={{ animationDelay: '0.5s' }}>⭐</div>
-      <div className="absolute top-2/3 right-1/6 text-lg animate-sparkle text-yellow-400" style={{ animationDelay: '1.5s' }}>✨</div>
-      <div className="absolute top-3/4 left-1/4 text-xl animate-sparkle text-pink-400" style={{ animationDelay: '0.8s' }}>⭐</div>
-      <div className="absolute top-5/6 right-1/3 text-lg animate-sparkle text-orange-400" style={{ animationDelay: '2.5s' }}>✨</div>
-      <div className="absolute bottom-1/4 left-1/2 text-xl animate-sparkle text-purple-400" style={{ animationDelay: '1.2s' }}>⭐</div>
-      <div className="absolute bottom-1/3 right-1/8 text-lg animate-sparkle text-yellow-500" style={{ animationDelay: '0.3s' }}>✨</div>
-      <div className="absolute bottom-1/6 left-1/6 text-xl animate-sparkle text-pink-500" style={{ animationDelay: '1.8s' }}>⭐</div>
-      <div className="absolute bottom-1/8 right-1/4 text-lg animate-sparkle text-orange-500" style={{ animationDelay: '0.7s' }}>✨</div>
+      {/* Simple mobile decorations */}
+      <div className="absolute top-36 left-4 text-3xl animate-bounce text-pink-500">🎈</div>
+      <div className="absolute top-40 right-4 text-3xl animate-bounce text-blue-500" style={{ animationDelay: '0.5s' }}>🎈</div>
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-4xl animate-pulse">🎂</div>
+      
+      {/* Mobile sparkles */}
+      <div className="absolute top-1/4 left-1/4 text-2xl animate-sparkle text-pink-400">✨</div>
+      <div className="absolute top-1/3 right-1/4 text-2xl animate-sparkle text-blue-400" style={{ animationDelay: '1s' }}>⭐</div>
+      <div className="absolute top-1/2 left-1/6 text-2xl animate-sparkle text-pink-500" style={{ animationDelay: '0.5s' }}>🌟</div>
+      <div className="absolute top-2/3 right-1/6 text-2xl animate-sparkle text-blue-500" style={{ animationDelay: '1.5s' }}>✨</div>
+      <div className="absolute bottom-1/3 left-1/3 text-2xl animate-sparkle text-pink-400" style={{ animationDelay: '0.8s' }}>⭐</div>
+      <div className="absolute bottom-1/4 right-1/3 text-2xl animate-sparkle text-blue-400" style={{ animationDelay: '1.2s' }}>🌟</div>
     </div>
   );
 }
