@@ -18,6 +18,17 @@
   100% { filter: hue-rotate(360deg); }
 }
 
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+  }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -28,6 +39,10 @@
 
 .animate-rainbow {
   animation: rainbow 4s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 0.5s ease-in-out;
 }
 
 /* Mobile touch improvements */
@@ -64,4 +79,19 @@ html {
 button, [role="button"] {
   min-height: 44px;
   min-width: 44px;
+}
+
+/* Animal interaction styles */
+.animal-button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.animal-button:active {
+  transform: scale(0.95);
+}
+
+/* Sound playing indicator */
+.sound-playing {
+  animation: pulse-glow 0.5s ease-in-out;
 }
