@@ -77,41 +77,45 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
   }, [score]);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-pink-50 via-white to-blue-50 backdrop-blur-md shadow-lg border-b-2 border-pink-200/50">
-      <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3">
+    <div className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-pink-50 via-white to-blue-50 backdrop-blur-md shadow-lg border-b-2 border-pink-200/50 w-full">
+      <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 w-full max-w-none">
         {/* Total Score - Enhanced */}
-        <div className="flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-pink-100 to-blue-100 rounded-2xl px-3 py-2 shadow-sm border border-pink-200/30">
-          <div className="text-xl sm:text-2xl animate-pulse">🏆</div>
+        <div className="flex items-center gap-3 sm:gap-4 bg-gradient-to-r from-pink-100 to-blue-100 rounded-2xl px-4 py-3 shadow-sm border border-pink-200/30">
+          <div className="text-3xl sm:text-4xl animate-pulse drop-shadow-lg">🏆</div>
           <div className="flex flex-col">
-            <div className="text-xs sm:text-sm font-semibold text-gray-700">Total Score</div>
-            <div className={`text-xl sm:text-2xl font-black bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent ${isAnimating ? 'animate-bounce' : 'animate-pulse'}`}>
+            <div className="text-sm sm:text-base font-semibold text-gray-700">Total Score</div>
+            <div className={`text-2xl sm:text-3xl font-black bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent drop-shadow-sm ${isAnimating ? 'animate-bounce' : 'animate-pulse'}`}>
               {score}
             </div>
           </div>
           
           {/* Achievement badges - enhanced */}
-          <div className="flex gap-1 ml-1 sm:ml-2">
-            {score >= 5 && <span className="text-sm sm:text-lg animate-sparkle-blue-pink drop-shadow-sm">🌟</span>}
-            {score >= 10 && <span className="text-sm sm:text-lg animate-bounce drop-shadow-sm">🏆</span>}
-            {score >= 20 && <span className="text-sm sm:text-lg animate-rainbow-shift drop-shadow-sm">👑</span>}
-            {score >= 30 && <span className="text-sm sm:text-lg animate-spin-slow drop-shadow-sm">🚀</span>}
+          <div className="flex gap-1 sm:gap-2 ml-2">
+            {score >= 5 && <span className="text-xl sm:text-2xl animate-sparkle-blue-pink drop-shadow-lg">🌟</span>}
+            {score >= 10 && <span className="text-xl sm:text-2xl animate-bounce drop-shadow-lg">🏆</span>}
+            {score >= 20 && <span className="text-xl sm:text-2xl animate-rainbow-shift drop-shadow-lg">👑</span>}
+            {score >= 30 && <span className="text-xl sm:text-2xl animate-spin-slow drop-shadow-lg">🚀</span>}
           </div>
         </div>
         
         {/* Individual Animal Counts - Enhanced */}
-        <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-[60%]">
+        <div className="flex gap-2 sm:gap-3 overflow-x-auto">
           {animalData.map((animal) => {
             const count = animalCounts[animal.name] || 0;
             const isActive = count > 0;
             return (
-              <div key={animal.name} className={`flex items-center gap-1 rounded-full px-2 py-1 min-w-fit flex-shrink-0 transition-all duration-300 ${
+              <div key={animal.name} className={`flex items-center gap-2 px-2 py-1 min-w-fit flex-shrink-0 transition-all duration-300 ${
                 isActive 
-                  ? 'bg-gradient-to-r from-pink-200 to-blue-200 shadow-sm border border-pink-300/40 animate-bubble-float' 
-                  : 'bg-gray-100 border border-gray-200'
+                  ? 'animate-bubble-float' 
+                  : ''
               }`}>
-                <span className="text-sm sm:text-lg">{animal.emoji}</span>
-                <span className={`text-xs sm:text-sm font-bold ${
-                  isActive ? 'text-gray-800' : 'text-gray-500'
+                <span className={`text-2xl sm:text-3xl transition-all duration-300 ${
+                  isActive ? 'animate-bounce drop-shadow-lg' : 'opacity-60'
+                }`}>{animal.emoji}</span>
+                <span className={`text-lg sm:text-xl font-black transition-all duration-300 ${
+                  isActive 
+                    ? 'text-transparent bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text drop-shadow-sm' 
+                    : 'text-gray-400'
                 }`}>{count}</span>
               </div>
             );
@@ -180,7 +184,7 @@ export default function Home() {
     // Use current window size or fallback to reasonable defaults
     const maxWidth = (windowSize.width || 800) - 180; // Account for bigger animals (40x40 = 160px + margin)
     const maxHeight = (windowSize.height || 600) - 200; // Less height restriction for better spacing
-    const minY = 80; // Adjust for navbar at top
+    const minY = 100; // Adjust for larger navbar at top
     
     while (attempts < maxAttempts) {
       const x = Math.random() * maxWidth;
@@ -344,7 +348,7 @@ export default function Home() {
       )}
 
       {/* Mobile-Optimized Animal Friends */}
-      <div className="relative w-full h-full pt-20">
+      <div className="relative w-full h-full pt-24">
         {animals.map((animal) => (
           <div
             key={animal.id}
@@ -352,9 +356,9 @@ export default function Home() {
             className={`absolute cursor-pointer transition-all duration-300 hover:scale-150 active:scale-75 text-9xl animate-float ${
               playingSound === animal.id ? 'animate-celebration-bounce scale-150 animate-rainbow-shift' : ''
             }`}
-            style={{
-              left: `${Math.min(animal.x, windowSize.width - 160)}px`,
-              top: `${Math.max(animal.y, 80)}px`,
+                          style={{
+                left: `${Math.min(animal.x, windowSize.width - 160)}px`,
+                top: `${Math.max(animal.y, 100)}px`,
               animationDelay: `${animal.id * 0.5}s`,
             }}
             onClick={() => handleAnimalClick(animal)}
