@@ -71,40 +71,47 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
   const [isAnimating, setIsAnimating] = useState(false);
   
   useEffect(() => {
-    setIsAnimating(true);
-    const timer = setTimeout(() => setIsAnimating(false), 500);
-    return () => clearTimeout(timer);
-  }, [score, animalCounts]);
+    if (score > 0) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => setIsAnimating(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [score]);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-pink-50 via-white to-blue-50 backdrop-blur-md shadow-lg border-b-2 border-pink-200/50 w-full">
-      <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 w-full max-w-none">
-        {/* Total Score - Enhanced */}
-        <div className="flex items-center gap-3 sm:gap-4 bg-gradient-to-r from-pink-100 to-blue-100 rounded-2xl px-4 py-3 shadow-sm border border-pink-200/30">
-          <div className="text-3xl sm:text-4xl drop-shadow-lg">🏆</div>
-          <div className="flex flex-col">
-            <div className="text-sm sm:text-base font-semibold text-gray-700">Total Score</div>
-            <div className={`text-2xl sm:text-3xl font-black bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent drop-shadow-sm transition-all duration-300 ${isAnimating ? 'scale-110' : 'scale-100'}`}>
-              {score}
-            </div>
-          </div>
+      <div className="flex flex-col items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 w-full max-w-none">
+        {/* Total Score - Enhanced and Prettier */}
+        <div className="flex items-center gap-4 sm:gap-5 bg-gradient-to-r from-pink-200 via-white to-blue-200 rounded-3xl px-6 py-4 shadow-lg border-2 border-pink-300/40 relative overflow-hidden">
+          {/* Decorative background elements */}
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-pink-100/50 to-blue-100/50 animate-pulse opacity-30"></div>
           
-          {/* Achievement badges - enhanced */}
-          <div className="flex gap-1 sm:gap-2 ml-2">
-            {score >= 5 && <span className="text-xl sm:text-2xl animate-sparkle-blue-pink drop-shadow-lg">🌟</span>}
-            {score >= 10 && <span className="text-xl sm:text-2xl drop-shadow-lg">🏆</span>}
-            {score >= 20 && <span className="text-xl sm:text-2xl animate-rainbow-shift drop-shadow-lg">👑</span>}
-            {score >= 30 && <span className="text-xl sm:text-2xl animate-spin-slow drop-shadow-lg">🚀</span>}
+          <div className="relative z-10 flex items-center gap-4 sm:gap-5">
+            <div className="text-4xl sm:text-5xl drop-shadow-lg animate-pulse">🏆</div>
+            <div className="flex flex-col items-center">
+              <div className="text-sm sm:text-base font-bold text-gray-800 mb-1">🎯 SID&apos;S TOTAL SCORE 🎯</div>
+              <div className={`text-4xl sm:text-5xl font-black bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent drop-shadow-lg transition-all duration-300 ${isAnimating ? 'scale-125' : 'scale-100'}`}>
+                {score}
+              </div>
+            </div>
+            
+            {/* Achievement badges - enhanced */}
+            <div className="flex gap-2 sm:gap-3">
+              {score >= 5 && <span className="text-2xl sm:text-3xl animate-sparkle-blue-pink drop-shadow-lg">🌟</span>}
+              {score >= 10 && <span className="text-2xl sm:text-3xl drop-shadow-lg">🏆</span>}
+              {score >= 20 && <span className="text-2xl sm:text-3xl animate-rainbow-shift drop-shadow-lg">👑</span>}
+              {score >= 30 && <span className="text-2xl sm:text-3xl animate-spin-slow drop-shadow-lg">🚀</span>}
+            </div>
           </div>
         </div>
         
-        {/* Individual Animal Counts - Enhanced */}
-        <div className="flex gap-3 sm:gap-4 overflow-x-auto">
+        {/* Individual Animal Counts - Enhanced and Centered */}
+        <div className="flex justify-center items-center gap-4 sm:gap-5 w-full px-2 overflow-x-auto">
           {animalData.map((animal) => {
             const count = animalCounts[animal.name] || 0;
             const isActive = count > 0;
             return (
-              <div key={`${animal.name}-${count}`} className="flex items-center gap-2 px-1 py-1 min-w-fit flex-shrink-0">
+              <div key={`${animal.name}-${count}`} className="flex flex-col items-center gap-1 px-2 py-1 min-w-fit flex-shrink-0">
                 <span className={`text-2xl sm:text-3xl transition-all duration-500 ${
                   isActive ? 'drop-shadow-lg scale-110' : 'opacity-60 scale-100'
                 }`}>{animal.emoji}</span>
@@ -180,7 +187,7 @@ export default function Home() {
     // Use current window size or fallback to reasonable defaults
     const maxWidth = (windowSize.width || 800) - 180; // Account for bigger animals (40x40 = 160px + margin)
     const maxHeight = (windowSize.height || 600) - 200; // Less height restriction for better spacing
-    const minY = 100; // Adjust for larger navbar at top
+    const minY = 140; // Adjust for taller navbar at top
     
     while (attempts < maxAttempts) {
       const x = Math.random() * maxWidth;
@@ -344,7 +351,7 @@ export default function Home() {
       )}
 
       {/* Mobile-Optimized Animal Friends */}
-      <div className="relative w-full h-full pt-24">
+      <div className="relative w-full h-full pt-32">
         {animals.map((animal) => (
           <div
             key={animal.id}
@@ -354,7 +361,7 @@ export default function Home() {
             }`}
                           style={{
                 left: `${Math.min(animal.x, windowSize.width - 160)}px`,
-                top: `${Math.max(animal.y, 100)}px`,
+                top: `${Math.max(animal.y, 140)}px`,
               animationDelay: `${animal.id * 0.5}s`,
             }}
             onClick={() => handleAnimalClick(animal)}
