@@ -77,6 +77,10 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
       return () => clearTimeout(timer);
     }
   }, [score]);
+  
+  // Force re-render when animalCounts change
+  const totalAnimalsClicked = Object.values(animalCounts).reduce((sum, count) => sum + count, 0);
+  const animalCountsString = JSON.stringify(animalCounts);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-pink-50 via-white to-blue-50 backdrop-blur-md shadow-lg border-b-2 border-pink-200/50 w-full">
@@ -111,7 +115,7 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
             const count = animalCounts[animal.name] || 0;
             const isActive = count > 0;
             return (
-              <div key={`${animal.name}-${count}`} className="flex flex-col items-center gap-1 px-2 py-1 min-w-fit flex-shrink-0">
+              <div key={animal.name} className="flex flex-col items-center gap-1 px-2 py-1 min-w-fit flex-shrink-0">
                 <span className={`text-2xl sm:text-3xl transition-all duration-500 ${
                   isActive ? 'drop-shadow-lg scale-110' : 'opacity-60 scale-100'
                 }`}>{animal.emoji}</span>
@@ -336,7 +340,12 @@ export default function Home() {
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-pink-300 via-blue-300 via-pink-400 to-blue-400 relative overflow-hidden fixed inset-0">
       {/* Clean Navbar */}
-      <ScoreNavbar score={score} animalCounts={animalCounts} animalData={animalData} />
+      <ScoreNavbar 
+        key={`${score}-${JSON.stringify(animalCounts)}`}
+        score={score} 
+        animalCounts={animalCounts} 
+        animalData={animalData} 
+      />
 
       {/* Confetti Overlay for Major Milestones */}
       <ConfettiOverlay isActive={showConfettiOverlay} />
