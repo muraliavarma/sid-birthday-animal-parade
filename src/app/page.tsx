@@ -62,46 +62,53 @@ const AnimalCelebration = ({ animalName, count, emoji }: { animalName: string; c
   );
 };
 
-// Mobile Score Display Component
-const CornerScore = ({ score, animalCounts }: { score: number; animalCounts: Record<string, number> }) => {
+// Clean Navbar Score Component
+const ScoreNavbar = ({ score, animalCounts, animalData }: { 
+  score: number; 
+  animalCounts: Record<string, number>;
+  animalData: Omit<Animal, 'id' | 'x' | 'y'>[];
+}) => {
   const [isAnimating, setIsAnimating] = useState(false);
   
   useEffect(() => {
     setIsAnimating(true);
-    const timer = setTimeout(() => setIsAnimating(false), 1000);
+    const timer = setTimeout(() => setIsAnimating(false), 500);
     return () => clearTimeout(timer);
   }, [score]);
 
   return (
-    <div className="w-full z-40">
-      {/* Mobile-optimized score display */}
-      <div className="bg-gradient-to-r from-pink-500 to-blue-500 rounded-3xl p-6 shadow-2xl animate-magical-glow">
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-white animate-bounce">🏆 SID&apos;S SCORE 🏆</div>
-            <div className={`text-7xl font-black text-white text-shadow-lg ${isAnimating ? 'animate-bounce' : 'animate-pulse'}`}>
+    <div className="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md shadow-lg">
+      <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3">
+        {/* Total Score */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="text-xl sm:text-2xl">🏆</div>
+          <div className="flex flex-col">
+            <div className="text-xs sm:text-sm font-medium text-gray-600">Total Score</div>
+            <div className={`text-xl sm:text-2xl font-black text-pink-600 ${isAnimating ? 'animate-bounce' : ''}`}>
               {score}
             </div>
-            <div className="text-lg font-bold text-white animate-pulse">AWESOME!</div>
           </div>
           
-          {/* Achievement badges */}
-          <div className="flex flex-col gap-2">
-            {score >= 5 && <span className="text-4xl animate-sparkle-blue-pink">🌟</span>}
-            {score >= 10 && <span className="text-4xl animate-bounce">🏆</span>}
-            {score >= 20 && <span className="text-4xl animate-rainbow-shift">👑</span>}
-            {score >= 30 && <span className="text-4xl animate-spin-slow">🚀</span>}
+          {/* Achievement badges - compact */}
+          <div className="flex gap-1 ml-1 sm:ml-2">
+            {score >= 5 && <span className="text-sm sm:text-lg animate-sparkle-blue-pink">🌟</span>}
+            {score >= 10 && <span className="text-sm sm:text-lg animate-bounce">🏆</span>}
+            {score >= 20 && <span className="text-sm sm:text-lg animate-rainbow-shift">👑</span>}
+            {score >= 30 && <span className="text-sm sm:text-lg animate-spin-slow">🚀</span>}
           </div>
         </div>
         
-        {/* Animal counts in a single row */}
-        <div className="flex justify-between gap-2">
-          {Object.entries(animalCounts).map(([animalName, count]) => (
-            <div key={animalName} className="bg-white/40 rounded-2xl px-3 py-2 text-center min-w-0 flex-1 animate-bubble-float shadow-lg">
-              <div className="text-white text-sm font-bold truncate">{animalName}</div>
-              <div className="text-white text-2xl font-black animate-pulse">{count}</div>
-            </div>
-          ))}
+        {/* Individual Animal Counts - Compact */}
+        <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-[60%]">
+          {animalData.map((animal) => {
+            const count = animalCounts[animal.name] || 0;
+            return (
+              <div key={animal.name} className="flex items-center gap-1 bg-gray-100 rounded-full px-2 py-1 min-w-fit flex-shrink-0">
+                <span className="text-sm sm:text-lg">{animal.emoji}</span>
+                <span className="text-xs sm:text-sm font-bold text-gray-700">{count}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -166,7 +173,7 @@ export default function Home() {
     // Use current window size or fallback to reasonable defaults
     const maxWidth = (windowSize.width || 800) - 180; // Account for bigger animals (40x40 = 160px + margin)
     const maxHeight = (windowSize.height || 600) - 200; // Less height restriction for better spacing
-    const minY = 120; // Adjust for scoreboard at top
+    const minY = 80; // Adjust for navbar at top
     
     while (attempts < maxAttempts) {
       const x = Math.random() * maxWidth;
@@ -314,12 +321,8 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-pink-300 via-blue-300 via-pink-400 to-blue-400 relative overflow-hidden fixed inset-0">
-      {/* White transparent background container */}
-      <div className="absolute inset-4 bg-white/20 backdrop-blur-sm rounded-3xl border-4 border-white/30 shadow-2xl">
-              {/* Scoreboard at the top - no reading needed! */}
-        <div className="pt-6 px-4 z-30 relative">
-          <CornerScore score={score} animalCounts={animalCounts} />
-        </div>
+      {/* Clean Navbar */}
+      <ScoreNavbar score={score} animalCounts={animalCounts} animalData={animalData} />
 
       {/* Confetti Overlay for Major Milestones */}
       <ConfettiOverlay isActive={showConfettiOverlay} />
@@ -334,7 +337,7 @@ export default function Home() {
       )}
 
       {/* Mobile-Optimized Animal Friends */}
-      <div className="relative w-full h-full pt-8">
+      <div className="relative w-full h-full pt-20">
         {animals.map((animal) => (
           <div
             key={animal.id}
@@ -344,7 +347,7 @@ export default function Home() {
             }`}
             style={{
               left: `${Math.min(animal.x, windowSize.width - 160)}px`,
-              top: `${Math.max(animal.y, 140)}px`,
+              top: `${Math.max(animal.y, 80)}px`,
               animationDelay: `${animal.id * 0.5}s`,
             }}
             onClick={() => handleAnimalClick(animal)}
@@ -369,9 +372,8 @@ export default function Home() {
       
       {/* Extra Fun Elements */}
       <div className="absolute top-1/5 left-1/2 text-4xl animate-spin-slow">🌟</div>
-             <div className="absolute bottom-1/5 left-1/8 text-4xl animate-pulse">🎉</div>
-       <div className="absolute bottom-1/5 right-1/8 text-4xl animate-bounce">✨</div>
-      </div>
+      <div className="absolute bottom-1/5 left-1/8 text-4xl animate-pulse">🎉</div>
+      <div className="absolute bottom-1/5 right-1/8 text-4xl animate-bounce">✨</div>
     </div>
   );
 }
