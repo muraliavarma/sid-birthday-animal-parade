@@ -77,7 +77,7 @@ const CornerScore = ({ score, animalCounts }: { score: number; animalCounts: Rec
           <div className="text-center">
             {/* Magical total score */}
             <div className="relative mb-4">
-              <div className="text-2xl font-bold text-white mb-1">🏰 Sid's Castle 🏰</div>
+              <div className="text-2xl font-bold text-white mb-1">🏰 Sid&apos;s Castle 🏰</div>
               <span className={`text-5xl font-black text-white drop-shadow-2xl ${isAnimating ? 'animate-celebration-bounce scale-125' : ''} transition-all duration-300 bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent`}>
                 {score}
               </span>
@@ -291,7 +291,7 @@ export default function Home() {
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30 w-full px-4">
         <div className="relative">
           <h1 className="text-4xl md:text-6xl font-black text-center bg-gradient-to-r from-pink-400 via-blue-400 to-purple-500 rounded-3xl px-8 py-6 shadow-2xl text-white backdrop-blur-sm border-4 border-white/30 animate-pulse">
-            🎂 SID'S MAGICAL 5TH BIRTHDAY! 🎂
+            🎂 SID&apos;S MAGICAL 5TH BIRTHDAY! 🎂
           </h1>
           {/* Floating birthday elements */}
           <div className="absolute -top-4 -left-4 text-4xl animate-bounce">🎈</div>
