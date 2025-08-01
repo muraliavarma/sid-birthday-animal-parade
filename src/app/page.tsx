@@ -69,12 +69,9 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
   animalData: Omit<Animal, 'id' | 'x' | 'y'>[];
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
-  const [displayScore, setDisplayScore] = useState(score);
-  const [displayCounts, setDisplayCounts] = useState(animalCounts);
   
-  // Update local state when props change
+  // Use props directly and trigger animation when score changes
   useEffect(() => {
-    setDisplayScore(score);
     if (score > 0) {
       setIsAnimating(true);
       const timer = setTimeout(() => setIsAnimating(false), 500);
@@ -82,13 +79,7 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
     }
   }, [score]);
   
-  useEffect(() => {
-    setDisplayCounts(animalCounts);
-  }, [animalCounts]);
-  
-  // Force re-render when animalCounts change
-  const totalAnimalsClicked = Object.values(displayCounts).reduce((sum, count) => sum + count, 0);
-  const animalCountsString = JSON.stringify(displayCounts);
+
 
   return (
     <div className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-pink-50 via-white to-blue-50 backdrop-blur-md shadow-lg border-b-2 border-pink-200/50 w-full">
@@ -103,7 +94,7 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
             <div className="flex flex-col items-center">
               <div className="text-sm sm:text-base font-bold text-gray-800 mb-1">🎯 SID&apos;S TOTAL SCORE 🎯</div>
               <div className={`text-4xl sm:text-5xl font-black bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent drop-shadow-lg transition-all duration-300 ${isAnimating ? 'scale-125' : 'scale-100'}`}>
-                {displayScore} (Debug: {totalAnimalsClicked})
+                {score}
               </div>
             </div>
             
@@ -120,7 +111,7 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
         {/* Individual Animal Counts - Enhanced and Centered */}
         <div className="flex justify-center items-center gap-4 sm:gap-5 w-full px-2 overflow-x-auto">
           {animalData.map((animal) => {
-            const count = displayCounts[animal.name] || 0;
+            const count = animalCounts[animal.name] || 0;
             const isActive = count > 0;
             return (
               <div key={animal.name} className="flex flex-col items-center gap-1 px-2 py-1 min-w-fit flex-shrink-0">
@@ -132,7 +123,6 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
                     ? 'text-transparent bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text drop-shadow-sm' 
                     : 'text-gray-400'
                 }`}>{count}</span>
-                <div className="text-xs text-red-500">Debug: {animalCountsString.includes(animal.name) ? 'Y' : 'N'}</div>
               </div>
             );
           })}
@@ -259,8 +249,6 @@ export default function Home() {
   }, [windowSize.width, windowSize.height, initializeAnimals]);
 
   const handleAnimalClick = (animal: Animal) => {
-    console.log('Animal clicked:', animal.name);
-    
     // Set visual feedback
     setPlayingSound(animal.id);
     
@@ -270,13 +258,11 @@ export default function Home() {
     // Update total score
     const newScore = score + 1;
     setScore(newScore);
-    console.log('Score updated to:', newScore);
     
     // Update individual animal count
     const newCount = (animalCounts[animal.name] || 0) + 1;
     const updatedCounts = { ...animalCounts, [animal.name]: newCount };
     setAnimalCounts(updatedCounts);
-    console.log('Animal counts updated:', updatedCounts);
     
     // Trigger confetti for overall score milestones
     if (newScore % 25 === 0) {
@@ -351,6 +337,7 @@ export default function Home() {
     <div className="h-screen w-screen bg-gradient-to-br from-pink-300 via-blue-300 via-pink-400 to-blue-400 relative overflow-hidden fixed inset-0">
       {/* Clean Navbar */}
       <ScoreNavbar 
+        key={score + Object.values(animalCounts).reduce((a, b) => a + b, 0)}
         score={score} 
         animalCounts={animalCounts} 
         animalData={animalData} 
