@@ -66,13 +66,36 @@ export default function Home() {
     // Clear visual feedback after sound duration
     setTimeout(() => setPlayingSound(null), 800);
     
-    // Add a little bounce animation
+    // Pop effect - make the animal disappear with a pop animation
     const element = document.getElementById(`animal-${animal.id}`);
     if (element) {
-      element.classList.add('animate-bounce');
+      // Add pop animation
+      element.classList.add('animate-pop');
+      element.style.transform = 'scale(1.5)';
+      element.style.opacity = '0';
+      
+      // Remove the animal from the array temporarily
+      setAnimals(prev => prev.filter(a => a.id !== animal.id));
+      
+      // After pop animation, respawn the animal in a new location
       setTimeout(() => {
-        element.classList.remove('animate-bounce');
-      }, 500);
+        const newX = Math.random() * (Math.min(windowSize.width, 800) - 160);
+        const newY = Math.random() * (windowSize.height - 400) + 200;
+        
+        setAnimals(prev => [...prev, {
+          ...animal,
+          x: newX,
+          y: newY,
+        }]);
+        
+        // Add fade-in animation to the newly spawned animal
+        setTimeout(() => {
+          const newElement = document.getElementById(`animal-${animal.id}`);
+          if (newElement) {
+            newElement.classList.add('animate-fade-in');
+          }
+        }, 50);
+      }, 300);
     }
   };
 
