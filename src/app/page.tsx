@@ -77,35 +77,42 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
   }, [score]);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md shadow-lg">
+    <div className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-pink-50 via-white to-blue-50 backdrop-blur-md shadow-lg border-b-2 border-pink-200/50">
       <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3">
-        {/* Total Score */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="text-xl sm:text-2xl">🏆</div>
+        {/* Total Score - Enhanced */}
+        <div className="flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-pink-100 to-blue-100 rounded-2xl px-3 py-2 shadow-sm border border-pink-200/30">
+          <div className="text-xl sm:text-2xl animate-pulse">🏆</div>
           <div className="flex flex-col">
-            <div className="text-xs sm:text-sm font-medium text-gray-600">Total Score</div>
-            <div className={`text-xl sm:text-2xl font-black text-pink-600 ${isAnimating ? 'animate-bounce' : ''}`}>
+            <div className="text-xs sm:text-sm font-semibold text-gray-700">Total Score</div>
+            <div className={`text-xl sm:text-2xl font-black bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent ${isAnimating ? 'animate-bounce' : 'animate-pulse'}`}>
               {score}
             </div>
           </div>
           
-          {/* Achievement badges - compact */}
+          {/* Achievement badges - enhanced */}
           <div className="flex gap-1 ml-1 sm:ml-2">
-            {score >= 5 && <span className="text-sm sm:text-lg animate-sparkle-blue-pink">🌟</span>}
-            {score >= 10 && <span className="text-sm sm:text-lg animate-bounce">🏆</span>}
-            {score >= 20 && <span className="text-sm sm:text-lg animate-rainbow-shift">👑</span>}
-            {score >= 30 && <span className="text-sm sm:text-lg animate-spin-slow">🚀</span>}
+            {score >= 5 && <span className="text-sm sm:text-lg animate-sparkle-blue-pink drop-shadow-sm">🌟</span>}
+            {score >= 10 && <span className="text-sm sm:text-lg animate-bounce drop-shadow-sm">🏆</span>}
+            {score >= 20 && <span className="text-sm sm:text-lg animate-rainbow-shift drop-shadow-sm">👑</span>}
+            {score >= 30 && <span className="text-sm sm:text-lg animate-spin-slow drop-shadow-sm">🚀</span>}
           </div>
         </div>
         
-        {/* Individual Animal Counts - Compact */}
+        {/* Individual Animal Counts - Enhanced */}
         <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-[60%]">
           {animalData.map((animal) => {
             const count = animalCounts[animal.name] || 0;
+            const isActive = count > 0;
             return (
-              <div key={animal.name} className="flex items-center gap-1 bg-gray-100 rounded-full px-2 py-1 min-w-fit flex-shrink-0">
+              <div key={animal.name} className={`flex items-center gap-1 rounded-full px-2 py-1 min-w-fit flex-shrink-0 transition-all duration-300 ${
+                isActive 
+                  ? 'bg-gradient-to-r from-pink-200 to-blue-200 shadow-sm border border-pink-300/40 animate-bubble-float' 
+                  : 'bg-gray-100 border border-gray-200'
+              }`}>
                 <span className="text-sm sm:text-lg">{animal.emoji}</span>
-                <span className="text-xs sm:text-sm font-bold text-gray-700">{count}</span>
+                <span className={`text-xs sm:text-sm font-bold ${
+                  isActive ? 'text-gray-800' : 'text-gray-500'
+                }`}>{count}</span>
               </div>
             );
           })}
