@@ -95,7 +95,7 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
             <div className="flex flex-col items-center">
               <div className="text-sm sm:text-base font-bold text-gray-800 mb-1">🎯 SID&apos;S TOTAL SCORE 🎯</div>
               <div className={`text-4xl sm:text-5xl font-black bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent drop-shadow-lg transition-all duration-300 ${isAnimating ? 'scale-125' : 'scale-100'}`}>
-                {score}
+                {score} (Debug: {totalAnimalsClicked})
               </div>
             </div>
             
@@ -124,6 +124,7 @@ const ScoreNavbar = ({ score, animalCounts, animalData }: {
                     ? 'text-transparent bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text drop-shadow-sm' 
                     : 'text-gray-400'
                 }`}>{count}</span>
+                <div className="text-xs text-red-500">Debug: {animalCountsString.includes(animal.name) ? 'Y' : 'N'}</div>
               </div>
             );
           })}
@@ -250,6 +251,8 @@ export default function Home() {
   }, [windowSize.width, windowSize.height, initializeAnimals]);
 
   const handleAnimalClick = (animal: Animal) => {
+    console.log('Animal clicked:', animal.name);
+    
     // Set visual feedback
     setPlayingSound(animal.id);
     
@@ -257,47 +260,43 @@ export default function Home() {
     playAnimalSound(animal.sound);
     
     // Update total score
-    setScore(prev => {
-      const newScore = prev + 1;
-      
-      // Trigger confetti for overall score milestones
-      if (newScore % 25 === 0) {
-        triggerConfetti('fireworks');
-        setShowConfettiOverlay(true);
-        setTimeout(() => setShowConfettiOverlay(false), 4000);
-      } else if (newScore % 10 === 0) {
-        triggerConfetti('rainbow');
-      } else if (newScore % 5 === 0) {
-        triggerConfetti('milestone');
-      }
-      
-      return newScore;
-    });
+    const newScore = score + 1;
+    setScore(newScore);
+    console.log('Score updated to:', newScore);
     
     // Update individual animal count
-    setAnimalCounts(prev => {
-      const newCount = (prev[animal.name] || 0) + 1;
-      const updatedCounts = { ...prev, [animal.name]: newCount };
+    const newCount = (animalCounts[animal.name] || 0) + 1;
+    const updatedCounts = { ...animalCounts, [animal.name]: newCount };
+    setAnimalCounts(updatedCounts);
+    console.log('Animal counts updated:', updatedCounts);
+    
+    // Trigger confetti for overall score milestones
+    if (newScore % 25 === 0) {
+      triggerConfetti('fireworks');
+      setShowConfettiOverlay(true);
+      setTimeout(() => setShowConfettiOverlay(false), 4000);
+    } else if (newScore % 10 === 0) {
+      triggerConfetti('rainbow');
+    } else if (newScore % 5 === 0) {
+      triggerConfetti('milestone');
+    }
+    
+    // Check for milestone celebrations with confetti
+    if (newCount % 5 === 0) {
+      setCelebrating(animal.name);
+      // Trigger appropriate confetti based on milestone
+      triggerMilestoneConfetti(newCount);
       
-      // Check for milestone celebrations with confetti
-      if (newCount % 5 === 0) {
-        setCelebrating(animal.name);
-        // Trigger appropriate confetti based on milestone
-        triggerMilestoneConfetti(newCount);
-        
-        // Special continuous confetti for major milestones
-        if (newCount % 25 === 0) {
-          triggerContinuousConfetti(2000);
-          setShowConfettiOverlay(true);
-          setTimeout(() => setShowConfettiOverlay(false), 3000);
-        }
-        
-        // Clear celebration after 3 seconds
-        setTimeout(() => setCelebrating(null), 3000);
+      // Special continuous confetti for major milestones
+      if (newCount % 25 === 0) {
+        triggerContinuousConfetti(2000);
+        setShowConfettiOverlay(true);
+        setTimeout(() => setShowConfettiOverlay(false), 3000);
       }
       
-      return updatedCounts;
-    });
+      // Clear celebration after 3 seconds
+      setTimeout(() => setCelebrating(null), 3000);
+    }
     
     // Clear visual feedback after sound duration
     setTimeout(() => setPlayingSound(null), 1200);
@@ -305,24 +304,27 @@ export default function Home() {
     // Pop effect - make the animal disappear with a pop animation
     const element = document.getElementById(`animal-${animal.id}`);
     if (element) {
-              // Add super fun pop animation
-        element.classList.add('animate-pop');
-        element.style.transform = 'scale(2.5) rotate(360deg)';
-        element.style.opacity = '0';
-        element.style.filter = 'hue-rotate(360deg)';
+      // Add super fun pop animation
+      element.classList.add('animate-pop');
+      element.style.transform = 'scale(2.5) rotate(360deg)';
+      element.style.opacity = '0';
+      element.style.filter = 'hue-rotate(360deg)';
       
       // Remove the animal from the array temporarily
       setAnimals(prev => prev.filter(a => a.id !== animal.id));
       
       // After pop animation, respawn the animal in a new location
       setTimeout(() => {
-        const newPosition = generateValidPosition(animals.filter(a => a.id !== animal.id), 200);
-        
-        setAnimals(prev => [...prev, {
-          ...animal,
-          x: newPosition.x,
-          y: newPosition.y,
-        }]);
+        setAnimals(prev => {
+          const currentAnimals = prev.filter(a => a.id !== animal.id);
+          const newPosition = generateValidPosition(currentAnimals, 200);
+          
+          return [...currentAnimals, {
+            ...animal,
+            x: newPosition.x,
+            y: newPosition.y,
+          }];
+        });
         
         // Add exciting entrance animation
         setTimeout(() => {
