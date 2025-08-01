@@ -255,6 +255,8 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-pink-300 via-blue-300 via-pink-400 to-blue-400 relative overflow-hidden fixed inset-0">
+      {/* White transparent background container */}
+      <div className="absolute inset-4 bg-white/20 backdrop-blur-sm rounded-3xl border-4 border-white/30 shadow-2xl">
       {/* Mobile Birthday Header */}
       <div className="pt-20 px-4 text-center z-30 relative">
         <h1 className="text-5xl font-black text-white mb-4 bg-gradient-to-r from-pink-600 to-blue-600 rounded-3xl px-8 py-6 shadow-2xl animate-bounce">
@@ -314,8 +316,9 @@ export default function Home() {
       
       {/* Extra Fun Elements */}
       <div className="absolute top-1/5 left-1/2 text-4xl animate-spin-slow">🌟</div>
-      <div className="absolute bottom-1/5 left-1/8 text-4xl animate-pulse">🎉</div>
-      <div className="absolute bottom-1/5 right-1/8 text-4xl animate-bounce">✨</div>
+             <div className="absolute bottom-1/5 left-1/8 text-4xl animate-pulse">🎉</div>
+       <div className="absolute bottom-1/5 right-1/8 text-4xl animate-bounce">✨</div>
+      </div>
     </div>
   );
 }
