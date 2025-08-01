@@ -1,103 +1,148 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect, useCallback, useMemo } from 'react';
+
+interface Animal {
+  id: number;
+  name: string;
+  emoji: string;
+  sound: string;
+  color: string;
+  x: number;
+  y: number;
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [animals, setAnimals] = useState<Animal[]>([]);
+  const [score, setScore] = useState(0);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const animalData = useMemo((): Omit<Animal, 'id' | 'x' | 'y'>[] => [
+    { name: 'Lion', emoji: '🦁', sound: 'roar', color: 'bg-yellow-400' },
+    { name: 'Elephant', emoji: '🐘', sound: 'trumpet', color: 'bg-gray-400' },
+    { name: 'Giraffe', emoji: '🦒', sound: 'munch', color: 'bg-yellow-300' },
+    { name: 'Monkey', emoji: '🐒', sound: 'ooh ooh', color: 'bg-orange-300' },
+    { name: 'Penguin', emoji: '🐧', sound: 'waddle', color: 'bg-blue-300' },
+    { name: 'Dinosaur', emoji: '🦕', sound: 'rawr', color: 'bg-green-400' },
+  ], []);
+
+  const initializeAnimals = useCallback(() => {
+    const initialAnimals = animalData.map((animal, index) => ({
+      ...animal,
+      id: index,
+      x: Math.random() * (Math.min(window.innerWidth, 800) - 100),
+      y: Math.random() * (window.innerHeight - 200) + 100, // Keep away from header
+    }));
+    setAnimals(initialAnimals);
+  }, [animalData]);
+
+  useEffect(() => {
+    const updateWindowSize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    updateWindowSize();
+    window.addEventListener('resize', updateWindowSize);
+    initializeAnimals();
+
+    return () => window.removeEventListener('resize', updateWindowSize);
+  }, [initializeAnimals]);
+
+  const playAnimalSound = (animal: Animal) => {
+    try {
+      // Simple sound simulation with different tones
+      const audioContext = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // Different frequencies for different animals
+      const frequencies: Record<string, number> = {
+        'roar': 150,
+        'trumpet': 200,
+        'munch': 300,
+        'ooh ooh': 400,
+        'waddle': 250,
+        'rawr': 180,
+      };
+      
+      oscillator.frequency.setValueAtTime(frequencies[animal.sound] || 300, audioContext.currentTime);
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch {
+      console.log('Audio not supported');
+    }
+    
+    setScore(prev => prev + 1);
+  };
+
+  const handleAnimalClick = (animal: Animal) => {
+    playAnimalSound(animal);
+    
+    // Add a little bounce animation
+    const element = document.getElementById(`animal-${animal.id}`);
+    if (element) {
+      element.classList.add('animate-bounce');
+      setTimeout(() => {
+        element.classList.remove('animate-bounce');
+      }, 500);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 relative overflow-hidden">
+      {/* Birthday Header */}
+      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 w-full px-4">
+        <h1 className="text-2xl md:text-4xl font-bold text-center bg-white bg-opacity-90 rounded-lg px-4 py-2 shadow-lg">
+          🎉 Birthday Animal Parade! 🎉
+        </h1>
+        <div className="text-center mt-2 bg-white bg-opacity-90 rounded-lg px-4 py-1 mx-auto max-w-xs">
+          <p className="text-lg font-semibold">Score: {score}</p>
+          <p className="text-sm">Tap the animals to hear them!</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+
+      {/* Animals */}
+      <div className="relative w-full h-screen">
+        {animals.map((animal) => (
+          <div
+            key={animal.id}
+            id={`animal-${animal.id}`}
+            className={`absolute cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 ${animal.color} rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center text-3xl md:text-4xl shadow-lg border-4 border-white animate-float`}
+            style={{
+              left: `${Math.min(animal.x, windowSize.width - 80)}px`,
+              top: `${Math.max(animal.y, 120)}px`,
+              animationDelay: `${animal.id * 0.5}s`,
+            }}
+            onClick={() => handleAnimalClick(animal)}
+          >
+            {animal.emoji}
+          </div>
+        ))}
+      </div>
+
+      {/* Floating balloons */}
+      <div className="absolute top-20 right-4 md:right-10 text-4xl md:text-6xl animate-bounce">🎈</div>
+      <div className="absolute top-40 right-8 md:right-20 text-3xl md:text-5xl animate-bounce" style={{ animationDelay: '0.5s' }}>🎈</div>
+      <div className="absolute top-60 right-2 md:right-5 text-2xl md:text-4xl animate-bounce" style={{ animationDelay: '1s' }}>🎈</div>
+
+      {/* Cake */}
+      <div className="absolute bottom-4 md:bottom-10 left-1/2 transform -translate-x-1/2 text-4xl md:text-6xl animate-pulse">🎂</div>
+
+      {/* Sparkles */}
+      <div className="absolute top-1/4 left-4 text-2xl animate-sparkle">✨</div>
+      <div className="absolute top-1/3 right-1/4 text-xl animate-sparkle" style={{ animationDelay: '1s' }}>✨</div>
+      <div className="absolute bottom-1/3 left-1/4 text-xl animate-sparkle" style={{ animationDelay: '2s' }}>✨</div>
     </div>
   );
 }
