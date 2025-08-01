@@ -64,7 +64,7 @@ const CornerScore = ({ score, animalCounts }: { score: number; animalCounts: Rec
   }, [score]);
 
   return (
-    <div className="fixed top-4 left-4 right-4 z-40">
+    <div className="w-full z-40">
       {/* Mobile-optimized score display */}
       <div className="bg-gradient-to-r from-pink-500 to-blue-500 rounded-3xl p-6 shadow-2xl animate-magical-glow">
         <div className="flex items-center justify-between mb-4">
@@ -131,8 +131,8 @@ export default function Home() {
     
     // Use current window size or fallback to reasonable defaults
     const maxWidth = (windowSize.width || 800) - 180; // Account for bigger animals (40x40 = 160px + margin)
-    const maxHeight = (windowSize.height || 600) - 300; // Less height restriction for better spacing
-    const minY = 180; // Adjust for scoreboard
+    const maxHeight = (windowSize.height || 600) - 200; // Less height restriction for better spacing
+    const minY = 120; // Adjust for scoreboard at top
     
     while (attempts < maxAttempts) {
       const x = Math.random() * maxWidth;
@@ -257,19 +257,10 @@ export default function Home() {
     <div className="h-screen w-screen bg-gradient-to-br from-pink-300 via-blue-300 via-pink-400 to-blue-400 relative overflow-hidden fixed inset-0">
       {/* White transparent background container */}
       <div className="absolute inset-4 bg-white/20 backdrop-blur-sm rounded-3xl border-4 border-white/30 shadow-2xl">
-      {/* Mobile Birthday Header */}
-      <div className="pt-20 px-4 text-center z-30 relative">
-        <h1 className="text-5xl font-black text-white mb-4 bg-gradient-to-r from-pink-600 to-blue-600 rounded-3xl px-8 py-6 shadow-2xl animate-bounce">
-          🎂 SID&apos;S 5TH BIRTHDAY! 🎂
-        </h1>
-        <div className="bg-gradient-to-r from-blue-500 to-pink-500 rounded-2xl px-6 py-4 text-white shadow-xl animate-pulse">
-          <p className="text-2xl font-bold">🐾 CATCH THE ANIMALS! 🐾</p>
-          <p className="text-lg font-bold mt-1">👆 TAP TAP TAP! 👆</p>
+              {/* Scoreboard at the top - no reading needed! */}
+        <div className="pt-6 px-4 z-30 relative">
+          <CornerScore score={score} animalCounts={animalCounts} />
         </div>
-      </div>
-
-      {/* Mobile Score Display */}
-      <CornerScore score={score} animalCounts={animalCounts} />
 
       {/* Mobile Animal Celebration */}
       {celebrating && (
@@ -281,7 +272,7 @@ export default function Home() {
       )}
 
       {/* Mobile-Optimized Animal Friends */}
-      <div className="relative w-full h-full pt-32">
+      <div className="relative w-full h-full pt-8">
         {animals.map((animal) => (
           <div
             key={animal.id}
@@ -302,8 +293,8 @@ export default function Home() {
       </div>
 
       {/* Super Fun Floating Decorations */}
-      <div className="absolute top-36 left-4 text-5xl animate-bounce">🎈</div>
-      <div className="absolute top-40 right-4 text-5xl animate-bounce" style={{ animationDelay: '0.5s' }}>🎈</div>
+      <div className="absolute top-24 left-4 text-5xl animate-bounce">🎈</div>
+      <div className="absolute top-28 right-4 text-5xl animate-bounce" style={{ animationDelay: '0.5s' }}>🎈</div>
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-7xl animate-pulse">🎂</div>
       
       {/* Playful Floating Friends */}
