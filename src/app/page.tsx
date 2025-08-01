@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { playAnimalSound } from '@/utils/audio';
 
 interface Animal {
   id: number;
@@ -16,8 +17,6 @@ export default function Home() {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [score, setScore] = useState(0);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
-  const [hasInteracted, setHasInteracted] = useState(false);
   const [playingSound, setPlayingSound] = useState<number | null>(null);
 
   const animalData = useMemo((): Omit<Animal, 'id' | 'x' | 'y'>[] => [
@@ -33,8 +32,8 @@ export default function Home() {
     const initialAnimals = animalData.map((animal, index) => ({
       ...animal,
       id: index,
-      x: Math.random() * (Math.min(window.innerWidth, 800) - 120),
-      y: Math.random() * (window.innerHeight - 300) + 150, // Keep away from header
+      x: Math.random() * (Math.min(window.innerWidth, 800) - 160),
+      y: Math.random() * (window.innerHeight - 400) + 200, // Keep away from header
     }));
     setAnimals(initialAnimals);
   }, [animalData]);
@@ -54,107 +53,18 @@ export default function Home() {
     return () => window.removeEventListener('resize', updateWindowSize);
   }, [initializeAnimals]);
 
-  const initializeAudio = useCallback(() => {
-    if (!hasInteracted) {
-      try {
-        const ctx = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
-        setAudioContext(ctx);
-        setHasInteracted(true);
-      } catch (error) {
-        console.log('Audio not supported');
-      }
-    }
-  }, [hasInteracted]);
-
-  const playFallbackSound = (animal: Animal) => {
-    const frequencies: Record<string, number> = {
-      'roar': 150,
-      'trumpet': 200,
-      'munch': 300,
-      'ooh ooh': 400,
-      'waddle': 250,
-      'rawr': 180,
-    };
-    
-    const frequency = frequencies[animal.sound] || 300;
-    
-    // Create a simple oscillator using Web Audio API or fallback
-    try {
-      const ctx = new (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
-      const oscillator = ctx.createOscillator();
-      const gainNode = ctx.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      
-      oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-      oscillator.type = 'sine';
-      
-      gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-      
-      oscillator.start(ctx.currentTime);
-      oscillator.stop(ctx.currentTime + 0.3);
-    } catch {
-      // If Web Audio API fails, just play a simple beep
-      console.log('Using fallback audio');
-    }
-  };
-
-  const playAnimalSound = (animal: Animal) => {
+  const handleAnimalClick = (animal: Animal) => {
     // Set visual feedback
     setPlayingSound(animal.id);
     
-    if (!audioContext) {
-      initializeAudio();
-      playFallbackSound(animal);
-      setScore(prev => prev + 1);
-      setTimeout(() => setPlayingSound(null), 500);
-      return;
-    }
-
-    try {
-      // Resume audio context if suspended
-      if (audioContext.state === 'suspended') {
-        audioContext.resume();
-      }
-
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      // Different frequencies for different animals
-      const frequencies: Record<string, number> = {
-        'roar': 150,
-        'trumpet': 200,
-        'munch': 300,
-        'ooh ooh': 400,
-        'waddle': 250,
-        'rawr': 180,
-      };
-      
-      oscillator.frequency.setValueAtTime(frequencies[animal.sound] || 300, audioContext.currentTime);
-      oscillator.type = 'sine';
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
-    } catch {
-      console.log('Audio playback failed');
-      // Fallback to simple sound
-      playFallbackSound(animal);
-    }
+    // Play the animal sound
+    playAnimalSound(animal.sound);
     
+    // Update score
     setScore(prev => prev + 1);
-    setTimeout(() => setPlayingSound(null), 500);
-  };
-
-  const handleAnimalClick = (animal: Animal) => {
-    playAnimalSound(animal);
+    
+    // Clear visual feedback after sound duration
+    setTimeout(() => setPlayingSound(null), 800);
     
     // Add a little bounce animation
     const element = document.getElementById(`animal-${animal.id}`);
@@ -185,12 +95,12 @@ export default function Home() {
           <div
             key={animal.id}
             id={`animal-${animal.id}`}
-            className={`absolute cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 animal-button ${animal.color} rounded-full w-24 h-24 md:w-32 md:h-32 flex items-center justify-center text-5xl md:text-6xl shadow-lg border-4 border-white animate-float ${
+            className={`absolute cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 animal-button ${animal.color} rounded-full w-32 h-32 md:w-40 md:h-40 flex items-center justify-center text-6xl md:text-7xl shadow-lg border-4 border-white animate-float ${
               playingSound === animal.id ? 'animate-pulse-glow' : ''
             }`}
             style={{
-              left: `${Math.min(animal.x, windowSize.width - 120)}px`,
-              top: `${Math.max(animal.y, 150)}px`,
+              left: `${Math.min(animal.x, windowSize.width - 160)}px`,
+              top: `${Math.max(animal.y, 200)}px`,
               animationDelay: `${animal.id * 0.5}s`,
             }}
             onClick={() => handleAnimalClick(animal)}
