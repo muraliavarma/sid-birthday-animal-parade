@@ -234,3 +234,106 @@ button, [role="button"] {
 .sound-playing {
   animation: pulse-glow 0.5s ease-in-out;
 }
+
+/* New magical animations for the enhanced UI */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes magical-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.5), 0 0 40px rgba(59, 130, 246, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.7), 0 0 60px rgba(236, 72, 153, 0.5);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1) rotate(0deg);
+  }
+  25% { 
+    opacity: 0.3; 
+    transform: scale(0.8) rotate(90deg);
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2) rotate(180deg);
+  }
+  75% { 
+    opacity: 0.5; 
+    transform: scale(0.9) rotate(270deg);
+  }
+}
+
+@keyframes rainbow-shift {
+  0% { filter: hue-rotate(0deg) brightness(1.2); }
+  25% { filter: hue-rotate(90deg) brightness(1.4); }
+  50% { filter: hue-rotate(180deg) brightness(1.2); }
+  75% { filter: hue-rotate(270deg) brightness(1.4); }
+  100% { filter: hue-rotate(360deg) brightness(1.2); }
+}
+
+@keyframes bubble-float {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px) scale(1); 
+    opacity: 0.8;
+  }
+  33% { 
+    transform: translateY(-15px) translateX(10px) scale(1.1); 
+    opacity: 1;
+  }
+  66% { 
+    transform: translateY(-5px) translateX(-8px) scale(0.9); 
+    opacity: 0.9;
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 4s linear infinite;
+}
+
+.animate-magical-glow {
+  animation: magical-glow 2s ease-in-out infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.animate-rainbow-shift {
+  animation: rainbow-shift 4s ease-in-out infinite;
+}
+
+.animate-bubble-float {
+  animation: bubble-float 4s ease-in-out infinite;
+}
+
+/* Text shadow utilities for better readability */
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced mobile responsiveness */
+@media (max-width: 640px) {
+  .text-8xl {
+    font-size: 4rem;
+  }
+  
+  .text-9xl {
+    font-size: 5rem;
+  }
+  
+  .w-36, .h-36 {
+    width: 8rem;
+    height: 8rem;
+  }
+  
+  .w-44, .h-44 {
+    width: 9rem;
+    height: 9rem;
+  }
+}
