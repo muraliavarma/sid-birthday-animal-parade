@@ -1,6 +1,15 @@
-import confetti from 'canvas-confetti';
+// Dynamic import to avoid SSR issues
+let confetti: any = null;
+
+if (typeof window !== 'undefined') {
+  import('canvas-confetti').then(module => {
+    confetti = module.default;
+  });
+}
 
 export const triggerConfetti = (type: 'milestone' | 'achievement' | 'rainbow' | 'fireworks' = 'milestone') => {
+  if (!confetti) return;
+  
   switch (type) {
     case 'milestone':
       // Basic milestone confetti - colorful and exciting
@@ -74,6 +83,8 @@ export const triggerConfetti = (type: 'milestone' | 'achievement' | 'rainbow' | 
 };
 
 export const triggerContinuousConfetti = (duration: number = 3000) => {
+  if (!confetti) return;
+  
   const end = Date.now() + duration;
 
   const frame = () => {

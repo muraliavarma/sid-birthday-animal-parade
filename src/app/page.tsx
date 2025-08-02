@@ -343,6 +343,18 @@ export default function Home() {
         animalData={animalData} 
       />
 
+      {/* Birthday Adventure Button */}
+      <div className="absolute top-32 right-4 z-30">
+        <button
+          onClick={() => window.location.href = '/birthday-adventure'}
+          className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 
+                     text-white text-lg font-bold py-3 px-6 rounded-2xl shadow-xl 
+                     transform hover:scale-110 transition-all duration-300 border-2 border-white/50"
+        >
+          🎂 Birthday Adventure! 🎂
+        </button>
+      </div>
+
       {/* Confetti Overlay for Major Milestones */}
       <ConfettiOverlay isActive={showConfettiOverlay} />
 
