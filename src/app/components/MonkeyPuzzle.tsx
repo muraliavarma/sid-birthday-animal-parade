@@ -51,10 +51,10 @@ function DraggablePuzzlePiece({ piece }: { piece: PuzzlePiece }) {
           backgroundImage: `url(${MONKEY_IMAGE})`,
           backgroundSize: '300px 300px',
           backgroundPosition: `-${col * 100}px -${row * 100}px`,
-          border: piece.isPlaced ? '3px solid #22C55E' : '2px solid #6B7280',
+          border: piece.isPlaced ? 'none' : '2px solid #6B7280',
           borderRadius: '8px',
           cursor: piece.isPlaced ? 'default' : 'grab',
-          boxShadow: piece.isPlaced ? '0 4px 12px rgba(34, 197, 94, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.2)',
+          boxShadow: piece.isPlaced ? 'none' : '0 2px 8px rgba(0, 0, 0, 0.2)',
           transition: piece.isPlaced ? 'all 0.3s ease' : 'none',
           opacity: isDragging ? 0.5 : 1,
         }}
@@ -68,7 +68,7 @@ function DraggablePuzzlePiece({ piece }: { piece: PuzzlePiece }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`${piece.isPlaced ? 'animate-pulse' : 'hover:scale-105'}`}
+      className=""
     >
       <div
         style={{
@@ -150,19 +150,15 @@ export default function MonkeyPuzzle() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    console.log('Drag end event:', { active: active.id, over: over?.id });
     setActiveId(null);
 
     const activePiece = pieces.find(p => p.id === active.id);
     if (!activePiece) {
-      console.log('Active piece not found');
       return;
     }
 
     // Check if dropped on puzzle area using @dnd-kit's over detection
     if (over?.id === 'puzzle-area') {
-      console.log('Piece dropped on puzzle area! Placing in correct position.');
-      
       // Place the piece in its correct position within the puzzle area
       setPieces(prev => prev.map(p => 
         p.id === active.id 
@@ -170,8 +166,6 @@ export default function MonkeyPuzzle() {
           : p
       ));
     } else {
-      console.log('Not dropped on puzzle area. Over:', over?.id);
-      
       // Fallback: check if mouse is over puzzle area
       const puzzleArea = document.querySelector('.puzzle-area');
       if (puzzleArea) {
@@ -185,10 +179,7 @@ export default function MonkeyPuzzle() {
           mouseX >= puzzleRect.left - tolerance && mouseX <= puzzleRect.right + tolerance &&
           mouseY >= puzzleRect.top - tolerance && mouseY <= puzzleRect.bottom + tolerance;
         
-        console.log('Fallback check - Mouse over puzzle area:', isOverPuzzleArea);
-        
         if (isOverPuzzleArea) {
-          console.log('Fallback: Placing piece in correct position.');
           setPieces(prev => prev.map(p => 
             p.id === active.id 
               ? { ...p, x: p.correctX, y: p.correctY, isPlaced: true }
@@ -226,18 +217,15 @@ export default function MonkeyPuzzle() {
             {pieces.map(piece => (
               <div
                 key={`target-${piece.id}`}
-                className="absolute border-2 border-dashed border-amber-400/50 rounded-lg bg-amber-200/20"
+                className="absolute border-2 border-dashed border-amber-400/50 bg-amber-200/20"
                 style={{
                   left: piece.correctX,
                   top: piece.correctY,
                   width: '100px',
                   height: '100px',
+                  borderRadius: '8px',
                 }}
-              >
-                <div className="absolute inset-0 flex items-center justify-center text-xs text-amber-600 font-bold">
-                  {piece.id}
-                </div>
-              </div>
+              />
             ))}
             
             {/* Placed pieces */}
