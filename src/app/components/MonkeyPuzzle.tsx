@@ -9,6 +9,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  useDroppable,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -27,6 +28,9 @@ interface PuzzlePiece {
   correctY: number;
   isPlaced: boolean;
 }
+
+// Use the actual monkey.jpg file
+const MONKEY_IMAGE = "/images/monkey.jpg";
 
 function SortablePuzzlePiece({ piece }: { piece: PuzzlePiece }) {
   const {
@@ -48,57 +52,33 @@ function SortablePuzzlePiece({ piece }: { piece: PuzzlePiece }) {
     const row = Math.floor(piece.id / 3);
     const col = piece.id % 3;
     
-    // Create a simple monkey face using CSS
+    // Calculate the clip path for each piece to show only its section of the monkey image
+    const pieceWidth = 100;
+    const pieceHeight = 100;
+    const imageWidth = 300;
+    const imageHeight = 300;
+    
+    // Calculate the position of this piece in the original image
+    const clipX = (col * pieceWidth / imageWidth) * 100;
+    const clipY = (row * pieceHeight / imageHeight) * 100;
+    const clipWidth = (pieceWidth / imageWidth) * 100;
+    const clipHeight = (pieceHeight / imageHeight) * 100;
+    
     return (
-      <div className="w-full h-full bg-gradient-to-br from-amber-300 to-orange-400 rounded-lg relative overflow-hidden">
-        {/* Monkey face elements based on position */}
-        {row === 0 && col === 1 && (
-          <>
-            {/* Top center - forehead */}
-            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-16 h-8 bg-amber-200 rounded-full"></div>
-          </>
-        )}
-        {row === 1 && col === 1 && (
-          <>
-            {/* Center - main face */}
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-20 h-20 bg-amber-300 rounded-full border-2 border-orange-500"></div>
-            {/* Eyes */}
-            <div className="absolute top-8 left-6 w-3 h-3 bg-black rounded-full"></div>
-            <div className="absolute top-8 right-6 w-3 h-3 bg-black rounded-full"></div>
-            {/* Nose */}
-            <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-pink-400 rounded-full"></div>
-            {/* Mouth */}
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-black rounded-full"></div>
-          </>
-        )}
-        {row === 2 && col === 1 && (
-          <>
-            {/* Bottom center - chin */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-8 bg-amber-200 rounded-full"></div>
-          </>
-        )}
-        {/* Ears */}
-        {(row === 0 && col === 0) && (
-          <div className="absolute top-2 left-2 w-8 h-8 bg-amber-400 rounded-full border border-orange-500"></div>
-        )}
-        {(row === 0 && col === 2) && (
-          <div className="absolute top-2 right-2 w-8 h-8 bg-amber-400 rounded-full border border-orange-500"></div>
-        )}
-        {/* Cheeks */}
-        {(row === 1 && col === 0) && (
-          <div className="absolute top-8 left-2 w-6 h-6 bg-pink-200 rounded-full"></div>
-        )}
-        {(row === 1 && col === 2) && (
-          <div className="absolute top-8 right-2 w-6 h-6 bg-pink-200 rounded-full"></div>
-        )}
-        {/* Body parts */}
-        {(row === 2 && col === 0) && (
-          <div className="absolute bottom-2 left-2 w-8 h-8 bg-amber-300 rounded-full"></div>
-        )}
-        {(row === 2 && col === 2) && (
-          <div className="absolute bottom-2 right-2 w-8 h-8 bg-amber-300 rounded-full"></div>
-        )}
-      </div>
+      <div 
+        className="w-full h-full rounded-lg overflow-hidden"
+        style={{
+          backgroundImage: `url(${MONKEY_IMAGE})`,
+          backgroundSize: '300px 300px',
+          backgroundPosition: `-${col * 100}px -${row * 100}px`,
+          border: piece.isPlaced ? '3px solid #22C55E' : '2px solid #6B7280',
+          borderRadius: '8px',
+          cursor: piece.isPlaced ? 'default' : 'grab',
+          boxShadow: piece.isPlaced ? '0 4px 12px rgba(34, 197, 94, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.2)',
+          transition: piece.isPlaced ? 'all 0.3s ease' : 'none',
+          opacity: isDragging ? 0.5 : 1,
+        }}
+      />
     );
   };
 
@@ -114,16 +94,22 @@ function SortablePuzzlePiece({ piece }: { piece: PuzzlePiece }) {
         style={{
           width: '100px',
           height: '100px',
-          border: piece.isPlaced ? '3px solid #22C55E' : '2px solid #6B7280',
-          borderRadius: '8px',
-          cursor: piece.isPlaced ? 'default' : 'grab',
-          boxShadow: piece.isPlaced ? '0 4px 12px rgba(34, 197, 94, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.2)',
-          transition: piece.isPlaced ? 'all 0.3s ease' : 'none',
-          opacity: isDragging ? 0.5 : 1,
         }}
       >
         {getPieceContent()}
       </div>
+    </div>
+  );
+}
+
+function DroppablePuzzleArea({ children }: { children: React.ReactNode }) {
+  const { setNodeRef } = useDroppable({
+    id: 'puzzle-area',
+  });
+
+  return (
+    <div ref={setNodeRef} className="puzzle-area relative w-[300px] h-[300px] bg-gradient-to-br from-amber-100 to-orange-200 rounded-xl border-4 border-amber-300">
+      {children}
     </div>
   );
 }
@@ -133,6 +119,7 @@ export default function MonkeyPuzzle() {
   const [isComplete, setIsComplete] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -179,27 +166,67 @@ export default function MonkeyPuzzle() {
     setActiveId(event.active.id as number);
   };
 
+  const handleDragMove = (event: DragEndEvent) => {
+    // Track mouse position during drag
+    setMousePosition({ x: event.delta.x, y: event.delta.y });
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    console.log('Drag end event:', { active: active.id, over: over?.id });
     setActiveId(null);
 
-    if (!over) return;
-
     const activePiece = pieces.find(p => p.id === active.id);
-    if (!activePiece) return;
+    if (!activePiece) {
+      console.log('Active piece not found');
+      return;
+    }
 
-    // Check if piece is near correct position
-    const tolerance = 30;
-    const isCorrectPosition = 
-      Math.abs(activePiece.x - activePiece.correctX) < tolerance && 
-      Math.abs(activePiece.y - activePiece.correctY) < tolerance;
+    console.log('Active piece:', activePiece);
 
-    if (isCorrectPosition) {
+    // Get the puzzle area to calculate relative position
+    const puzzleArea = document.querySelector('.puzzle-area');
+    if (!puzzleArea) {
+      console.log('Puzzle area not found');
+      return;
+    }
+
+    const puzzleRect = puzzleArea.getBoundingClientRect();
+    
+    // Get the piece element to see where it actually ended up
+    const pieceElement = document.querySelector(`[data-piece-id="${active.id}"]`);
+    if (!pieceElement) {
+      console.log('Piece element not found');
+      return;
+    }
+
+    const pieceRect = pieceElement.getBoundingClientRect();
+    
+    // Calculate the piece position relative to the puzzle area
+    const relativeX = pieceRect.left - puzzleRect.left;
+    const relativeY = pieceRect.top - puzzleRect.top;
+    
+    console.log(`Piece ${active.id} relative position: (${relativeX}, ${relativeY})`);
+    console.log(`Piece ${active.id} correct position: (${activePiece.correctX}, ${activePiece.correctY})`);
+    
+    // Check if piece is near its correct position
+    const tolerance = 100; // Large tolerance for easier placement
+    const distance = Math.sqrt(
+      Math.pow(relativeX - activePiece.correctX, 2) + 
+      Math.pow(relativeY - activePiece.correctY, 2)
+    );
+    
+    console.log(`Piece ${active.id} distance to correct position: ${distance}`);
+    
+    if (distance < tolerance) {
+      console.log(`Placing piece ${active.id} in correct position`);
       setPieces(prev => prev.map(p => 
         p.id === active.id 
           ? { ...p, x: p.correctX, y: p.correctY, isPlaced: true }
           : p
       ));
+    } else {
+      console.log(`Piece ${active.id} not close enough to correct position`);
     }
   };
 
@@ -220,21 +247,25 @@ export default function MonkeyPuzzle() {
     <div className="w-full h-full flex flex-col items-center justify-center p-4">
       {/* Puzzle Area */}
       <div className="relative bg-white/20 backdrop-blur-sm rounded-2xl p-6 mb-6">
-        <div className="relative w-[300px] h-[300px] bg-gradient-to-br from-amber-100 to-orange-200 rounded-xl border-4 border-amber-300">
+        <DroppablePuzzleArea>
           {/* Correct positions grid */}
           {pieces.map(piece => (
             <div
               key={`target-${piece.id}`}
-              className="absolute border-2 border-dashed border-amber-400/50 rounded-lg"
+              className="absolute border-2 border-dashed border-amber-400/50 rounded-lg bg-amber-200/20"
               style={{
                 left: piece.correctX,
                 top: piece.correctY,
                 width: '100px',
                 height: '100px',
               }}
-            />
+            >
+              <div className="absolute inset-0 flex items-center justify-center text-xs text-amber-600 font-bold">
+                {piece.id}
+              </div>
+            </div>
           ))}
-        </div>
+        </DroppablePuzzleArea>
       </div>
 
       {/* Draggable Pieces */}
@@ -242,12 +273,14 @@ export default function MonkeyPuzzle() {
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
+          onDragMove={handleDragMove}
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={pieces.map(p => p.id)}>
             {pieces.map(piece => (
               <div
                 key={piece.id}
+                data-piece-id={piece.id}
                 style={{
                   position: 'absolute',
                   left: piece.x,
