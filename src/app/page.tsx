@@ -178,13 +178,13 @@ export default function Home() {
       {/* Back Button */}
       <button
         onClick={() => setGameStarted(false)}
-        className="absolute top-4 left-4 text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white px-6 py-3 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/50 z-10"
+        className="absolute top-2 left-2 text-lg font-bold bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white px-3 py-1 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/50 z-10"
       >
-        ↩️ Back
+        ↩️
       </button>
 
       {/* Puzzle Component */}
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center pt-8">
         <MonkeyPuzzle />
       </div>
     </div>

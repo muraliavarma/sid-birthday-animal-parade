@@ -204,14 +204,25 @@ export default function MonkeyPuzzle() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-4">
+    <div className="w-full h-full flex flex-col items-center justify-center p-2">
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
+        {/* Reference Thumbnail */}
+        <div className="mb-2 flex justify-center">
+          <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg">
+            <img 
+              src={MONKEY_IMAGE} 
+              alt="Monkey reference" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
         {/* Puzzle Area */}
-        <div className="relative bg-white/20 backdrop-blur-sm rounded-2xl p-6 mb-6">
+        <div className="relative bg-white/20 backdrop-blur-sm rounded-2xl p-4 mb-4">
           <DroppablePuzzleArea>
             {/* Correct positions grid */}
             {pieces.map(piece => (
@@ -247,7 +258,7 @@ export default function MonkeyPuzzle() {
         </div>
 
         {/* Draggable Pieces */}
-        <div className="relative w-full h-64 bg-gradient-to-br from-pink-200 to-purple-200 rounded-xl p-4">
+        <div className="relative w-full h-48 bg-gradient-to-br from-pink-200 to-purple-200 rounded-xl p-4">
           {pieces.filter(p => !p.isPlaced).map(piece => (
             <div
               key={piece.id}
@@ -275,24 +286,18 @@ export default function MonkeyPuzzle() {
       {/* Completion Message */}
       {isComplete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gradient-to-r from-yellow-300 to-orange-400 p-8 rounded-2xl text-center shadow-2xl">
-            <h2 className="text-4xl font-bold text-white mb-4">🎉 Amazing Job, Sid! 🎉</h2>
-            <p className="text-xl text-white mb-6">You completed the monkey puzzle!</p>
+          <div className="bg-gradient-to-r from-yellow-300 to-orange-400 p-6 rounded-2xl text-center shadow-2xl mx-4">
+            <h2 className="text-2xl font-bold text-white mb-3">🎉 Amazing Job, Sid! 🎉</h2>
+            <p className="text-lg text-white mb-4">You completed the monkey puzzle!</p>
             <button
               onClick={resetPuzzle}
-              className="bg-white text-orange-500 px-6 py-3 rounded-full font-bold hover:bg-orange-100 transition-colors"
+              className="bg-white text-orange-500 px-4 py-2 rounded-full font-bold hover:bg-orange-100 transition-colors"
             >
               Play Again! 🐒
             </button>
           </div>
         </div>
       )}
-
-      {/* Instructions */}
-      <div className="mt-4 text-center text-white/90">
-        <p className="text-lg font-semibold">🐒 Drag the puzzle pieces to complete the monkey!</p>
-        <p className="text-sm opacity-75">Tap and drag on mobile, click and drag on desktop</p>
-      </div>
     </div>
   );
 } 
