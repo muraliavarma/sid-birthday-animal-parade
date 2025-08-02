@@ -5,9 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Birthday Animal Parade! 🎉",
-  description: "A fun birthday game for kids to play with animals and sounds",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+  title: "Hello World - Next.js App",
+  description: "A simple Next.js application",
 };
 
 export default function RootLayout({
