@@ -39,10 +39,7 @@ export default function BirthdayAdventure() {
     }
   }, []);
 
-  const saveGameState = (newState: GameState) => {
-    setGameState(newState);
-    localStorage.setItem('birthdayAdventureState', JSON.stringify(newState));
-  };
+
 
   const handleStartAdventure = () => {
     setIsLoading(true);
@@ -88,7 +85,7 @@ export default function BirthdayAdventure() {
             {/* Title */}
             <div className="space-y-4">
               <h1 className="text-4xl sm:text-6xl font-black text-white drop-shadow-2xl animate-pulse">
-                🎉 {gameState.playerName}'s Big Birthday Animal Adventure! 🎉
+                🎉 {gameState.playerName}&apos;s Big Birthday Animal Adventure! 🎉
               </h1>
               <div className="text-3xl sm:text-5xl font-bold text-white drop-shadow-xl animate-bounce">
                 🦁 🐒 🐬 🐧 🦊
@@ -150,7 +147,7 @@ export default function BirthdayAdventure() {
         {/* Map Content */}
         <div className="pt-20 px-4 h-full overflow-y-auto">
           <div className="space-y-4 max-w-sm mx-auto">
-            {levels.map((level, index) => {
+            {levels.map((level) => {
               const isCompleted = gameState.completedLevels.includes(level.id);
               const isUnlocked = level.id <= gameState.completedLevels.length + 1;
               

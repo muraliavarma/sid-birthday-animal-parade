@@ -2,11 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { triggerConfetti, triggerContinuousConfetti } from '@/utils/confetti';
+import { triggerContinuousConfetti } from '@/utils/confetti';
+
+interface GameState {
+  playerName: string;
+  currentLevel: number;
+  completedLevels: number[];
+  totalAnimals: number;
+}
 
 export default function CelebrationPage() {
   const router = useRouter();
-  const [gameState, setGameState] = useState<any>({});
+  const [gameState, setGameState] = useState<GameState>({
+    playerName: 'Sid',
+    currentLevel: 1,
+    completedLevels: [],
+    totalAnimals: 0,
+  });
   const [showFinalMessage, setShowFinalMessage] = useState(false);
 
   useEffect(() => {

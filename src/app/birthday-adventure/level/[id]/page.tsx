@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { triggerConfetti } from '@/utils/confetti';
 
@@ -12,6 +12,13 @@ interface PuzzlePiece {
   correctY: number;
   isPlaced: boolean;
   isDragging: boolean;
+}
+
+interface GameState {
+  playerName: string;
+  currentLevel: number;
+  completedLevels: number[];
+  totalAnimals: number;
 }
 
 interface LevelData {
@@ -80,30 +87,22 @@ export default function LevelPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [puzzlePieces, setPuzzlePieces] = useState<PuzzlePiece[]>([]);
-  const [isComplete, setIsComplete] = useState(false);
   const [showReward, setShowReward] = useState(false);
-  const [gameState, setGameState] = useState<any>({});
+  const [gameState, setGameState] = useState<GameState>({
+    playerName: 'Sid',
+    currentLevel: 1,
+    completedLevels: [],
+    totalAnimals: 0,
+  });
   const [draggedPiece, setDraggedPiece] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
 
-  useEffect(() => {
-    // Load game state
-    const savedState = localStorage.getItem('birthdayAdventureState');
-    if (savedState) {
-      setGameState(JSON.parse(savedState));
-    }
-
-    // Initialize puzzle pieces
-    initializePuzzle();
-  }, [levelId]);
-
-  const initializePuzzle = () => {
+  const initializePuzzle = useCallback(() => {
     const pieces: PuzzlePiece[] = [];
-    const { rows, cols } = level.gridSize;
+    const { cols } = level.gridSize;
     
     // Calculate grid positions
     const gridWidth = cols * 80 + (cols - 1) * 10;
-    const gridHeight = rows * 80 + (rows - 1) * 10;
     const gridStartX = (window.innerWidth - gridWidth) / 2;
     const gridStartY = 200;
     
@@ -123,7 +122,18 @@ export default function LevelPage() {
     }
     
     setPuzzlePieces(pieces);
-  };
+  }, [level.gridSize, level.pieces]);
+
+  useEffect(() => {
+    // Load game state
+    const savedState = localStorage.getItem('birthdayAdventureState');
+    if (savedState) {
+      setGameState(JSON.parse(savedState));
+    }
+
+    // Initialize puzzle pieces
+    initializePuzzle();
+  }, [levelId, initializePuzzle]);
 
   const handleTouchStart = (e: React.TouchEvent, pieceId: number) => {
     const touch = e.touches[0];
@@ -152,7 +162,7 @@ export default function LevelPage() {
     setTouchStart({ x: touch.clientX, y: touch.clientY });
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
+  const handleTouchEnd = () => {
     if (!draggedPiece) return;
     
     const piece = puzzlePieces.find(p => p.id === draggedPiece);
@@ -193,7 +203,6 @@ export default function LevelPage() {
   };
 
   const handlePuzzleComplete = () => {
-    setIsComplete(true);
     triggerConfetti('rainbow');
     
     setTimeout(() => {
