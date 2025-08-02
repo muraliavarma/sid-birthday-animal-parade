@@ -5,9 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Birthday Animal Parade! 🎉",
-  description: "A fun birthday game for kids to play with animals and sounds",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+  title: "Sid's Birthday Game! 🎉",
+  description: "A special birthday game for Sid's 5th birthday!",
 };
 
 export default function RootLayout({
@@ -17,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} overflow-hidden`}>{children}</body>
     </html>
   );
 }
