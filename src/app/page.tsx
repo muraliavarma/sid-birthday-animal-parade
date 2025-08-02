@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Confetti from 'react-confetti';
+import MonkeyPuzzle from './components/MonkeyPuzzle';
 
 export default function Home() {
   /* --------------------------- STATE MANAGEMENT -------------------------- */
@@ -137,6 +138,10 @@ export default function Home() {
           >
             🎮 LET&apos;S PLAY! 🎮
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+            <div className="absolute -top-1 -left-1 w-4 h-4 bg-yellow-300 rounded-full animate-ping"></div>
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-400 rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
+            <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-pink-400 rounded-full animate-ping" style={{animationDelay: '0.4s'}}></div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-300 rounded-full animate-ping" style={{animationDelay: '0.6s'}}></div>
           </button>
 
           {/* Birthday Message */}
@@ -158,27 +163,30 @@ export default function Home() {
     );
   }
 
-  /* ------------------- GAME STARTED (PLACEHOLDER) ------------------- */
+  /* ------------------- MONKEY PUZZLE GAME ------------------- */
   return (
-    <div className="w-screen h-screen bg-gradient-to-b from-purple-700 via-fuchsia-600 to-pink-500 overflow-hidden flex flex-col items-center justify-center relative">
+    <div className="w-screen h-screen bg-gradient-to-b from-pink-400 to-blue-500 overflow-hidden relative">
       {/* Confetti */}
       {confettiActive && <Confetti width={dimensions.width} height={dimensions.height} numberOfPieces={500} recycle={false} />}
 
       {/* Floating Animals */}
-      <span className="absolute top-6 left-6 text-8xl animate-bounce">🦁</span>
-      <span className="absolute top-16 right-8 text-9xl animate-bounce" style={{animationDelay:'0.4s'}}>🐵</span>
-      <span className="absolute bottom-24 left-16 text-8xl animate-bounce" style={{animationDelay:'0.8s'}}>🐯</span>
-      <span className="absolute bottom-10 right-12 text-9xl animate-bounce" style={{animationDelay:'1.2s'}}>🐼</span>
+      <span className="absolute top-6 left-6 text-6xl animate-bounce">🦁</span>
+      <span className="absolute top-16 right-8 text-7xl animate-bounce" style={{animationDelay:'0.4s'}}>🐵</span>
+      <span className="absolute bottom-24 left-16 text-6xl animate-bounce" style={{animationDelay:'0.8s'}}>🐯</span>
+      <span className="absolute bottom-10 right-12 text-7xl animate-bounce" style={{animationDelay:'1.2s'}}>🐼</span>
 
-      <h1 className="text-4xl sm:text-5xl font-extrabold mb-8 drop-shadow-2xl animate-bounce bg-gradient-to-r from-yellow-300 via-pink-400 to-orange-500 bg-clip-text text-transparent">Let the Adventure Begin!</h1>
-      <p className="text-3xl text-white/90 mb-12">(More fun levels coming soon, Sid!)</p>
-
+      {/* Back Button */}
       <button
         onClick={() => setGameStarted(false)}
-        className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white px-8 py-4 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/50"
+        className="absolute top-4 left-4 text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white px-6 py-3 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/50 z-10"
       >
-        ↩️ Back to Birthday Cake
+        ↩️ Back
       </button>
+
+      {/* Puzzle Component */}
+      <div className="w-full h-full flex items-center justify-center">
+        <MonkeyPuzzle />
+      </div>
     </div>
   );
 }
