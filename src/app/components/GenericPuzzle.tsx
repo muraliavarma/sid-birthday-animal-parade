@@ -28,6 +28,7 @@ interface PuzzleConfig {
   name: string;
   image: string;
   color: string;
+  icon: string;
 }
 
 const PUZZLE_CONFIGS: PuzzleConfig[] = [
@@ -35,13 +36,15 @@ const PUZZLE_CONFIGS: PuzzleConfig[] = [
     id: 'monkey',
     name: 'Monkey',
     image: '/images/monkey.jpg',
-    color: 'from-amber-100 to-orange-200'
+    color: 'from-amber-100 to-orange-200',
+    icon: '🐵'
   },
   {
     id: 'lion',
     name: 'Lion',
     image: '/images/lion.jpg',
-    color: 'from-yellow-100 to-orange-200'
+    color: 'from-yellow-100 to-orange-200',
+    icon: '🦁'
   }
 ];
 
@@ -229,20 +232,20 @@ export default function GenericPuzzle() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-2">
+    <div className="w-full h-full flex flex-col items-center justify-start pt-4">
       {/* Puzzle Selector */}
-      <div className="mb-6 flex gap-4 justify-center">
+      <div className="mb-2 flex gap-3 justify-center">
         {PUZZLE_CONFIGS.map((puzzle) => (
           <button
             key={puzzle.id}
             onClick={() => handlePuzzleChange(puzzle)}
-            className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+            className={`text-4xl p-3 rounded-full transition-all duration-200 ${
               selectedPuzzle.id === puzzle.id
-                ? 'bg-gradient-to-r from-orange-400 to-red-500 text-white shadow-lg scale-105'
-                : 'bg-white text-gray-700 hover:bg-gray-100 shadow-md'
+                ? 'bg-gradient-to-r from-orange-400 to-red-500 shadow-lg scale-110'
+                : 'bg-white/80 hover:bg-white shadow-md hover:scale-105'
             }`}
           >
-            {puzzle.name} Puzzle
+            {puzzle.icon}
           </button>
         ))}
       </div>
@@ -252,19 +255,9 @@ export default function GenericPuzzle() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        {/* Reference Thumbnail */}
-        <div className="mb-2 flex justify-center">
-          <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg">
-            <img 
-              src={selectedPuzzle.image} 
-              alt={`${selectedPuzzle.name} reference`} 
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
 
         {/* Puzzle Area */}
-        <div className="relative bg-white/20 backdrop-blur-sm rounded-2xl p-4 mb-4">
+        <div className="relative bg-white/20 backdrop-blur-sm rounded-2xl p-4 mb-2">
           <DroppablePuzzleArea bgColor={selectedPuzzle.color}>
             {/* Correct positions grid */}
             {pieces.map(piece => (
@@ -300,7 +293,7 @@ export default function GenericPuzzle() {
         </div>
 
         {/* Draggable Pieces */}
-        <div className="relative w-full h-48 bg-gradient-to-br from-pink-200 to-purple-200 rounded-xl p-4">
+        <div className="relative w-full h-40 bg-gradient-to-br from-pink-200 to-purple-200 rounded-xl p-4">
           {pieces.filter(p => !p.isPlaced).map(piece => (
             <div
               key={piece.id}

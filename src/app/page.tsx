@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Confetti from 'react-confetti';
-import MonkeyPuzzle from './components/MonkeyPuzzle';
+import GenericPuzzle from './components/GenericPuzzle';
 
 export default function Home() {
   /* --------------------------- STATE MANAGEMENT -------------------------- */
@@ -163,7 +163,7 @@ export default function Home() {
     );
   }
 
-  /* ------------------- MONKEY PUZZLE GAME ------------------- */
+  /* ------------------- GENERIC PUZZLE GAME ------------------- */
   return (
     <div className="w-screen h-screen bg-gradient-to-b from-pink-400 to-blue-500 overflow-hidden relative">
       {/* Confetti */}
@@ -184,8 +184,8 @@ export default function Home() {
       </button>
 
       {/* Puzzle Component */}
-      <div className="w-full h-full flex items-center justify-center pt-8">
-        <MonkeyPuzzle />
+      <div className="w-full h-full flex items-start justify-center pt-0">
+        <GenericPuzzle />
       </div>
     </div>
   );
