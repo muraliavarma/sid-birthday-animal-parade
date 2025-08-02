@@ -45,6 +45,13 @@ const PUZZLE_CONFIGS: PuzzleConfig[] = [
     image: '/images/lion.jpg',
     color: 'from-yellow-100 to-orange-200',
     icon: '🦁'
+  },
+  {
+    id: 'tiger',
+    name: 'Tiger',
+    image: '/images/tiger.jpg',
+    color: 'from-orange-100 to-red-200',
+    icon: '🐯'
   }
 ];
 
