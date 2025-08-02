@@ -133,9 +133,10 @@ export default function Home() {
           {/* Super Fun Button */}
           <button
             onClick={handleStartGame}
-            className="text-5xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 active:from-pink-600 active:to-blue-600 text-white px-10 py-6 rounded-full shadow-2xl transform active:scale-95 transition-all duration-300 animate-pulse border-4 border-white"
+            className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-500 active:from-yellow-400 active:to-pink-600 text-white px-8 py-6 rounded-full shadow-2xl transform active:scale-95 hover:scale-110 transition-all duration-300 animate-bounce border-4 border-yellow-200 hover:border-orange-300 relative overflow-hidden group"
           >
             🎮 LET&apos;S PLAY! 🎮
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
           </button>
 
           {/* Birthday Message */}
@@ -169,12 +170,12 @@ export default function Home() {
       <span className="absolute bottom-24 left-16 text-8xl animate-bounce" style={{animationDelay:'0.8s'}}>🐯</span>
       <span className="absolute bottom-10 right-12 text-9xl animate-bounce" style={{animationDelay:'1.2s'}}>🐼</span>
 
-      <h1 className="text-9xl font-extrabold mb-10 drop-shadow-2xl animate-bounce bg-gradient-to-r from-yellow-300 via-pink-400 to-orange-500 bg-clip-text text-transparent">Let the Adventure Begin!</h1>
+      <h1 className="text-4xl sm:text-5xl font-extrabold mb-8 drop-shadow-2xl animate-bounce bg-gradient-to-r from-yellow-300 via-pink-400 to-orange-500 bg-clip-text text-transparent">Let the Adventure Begin!</h1>
       <p className="text-3xl text-white/90 mb-12">(More fun levels coming soon, Sid!)</p>
 
       <button
         onClick={() => setGameStarted(false)}
-        className="text-5xl font-extrabold bg-red-500 hover:bg-red-600 text-white px-16 py-8 rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300"
+        className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white px-8 py-4 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-white/50"
       >
         ↩️ Back to Birthday Cake
       </button>
