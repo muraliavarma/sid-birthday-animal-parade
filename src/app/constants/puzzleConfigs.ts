@@ -37,11 +37,18 @@ export const PUZZLE_CONFIGS: PuzzleConfig[] = [
     icon: '🦛'
   },
   {
+    id: 'basilisk-lizard',
+    name: 'Basilisk Lizard',
+    image: '/images/basilisk-lizard.jpeg',
+    color: 'from-green-100 to-lime-200',
+    icon: '🦎'
+  },
+  {
     id: 'komodo-dragon',
     name: 'Komodo Dragon',
     image: '/images/komodo-dragon.jpg',
     color: 'from-green-100 to-lime-200',
-    icon: '🦎'
+    icon: '🐊'
   },
   {
     id: 'panda',
