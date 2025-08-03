@@ -35,5 +35,12 @@ export const PUZZLE_CONFIGS: PuzzleConfig[] = [
     image: '/images/hippo.avif',
     color: 'from-gray-100 to-gray-200',
     icon: '🦛'
-  }
+  },
+  {
+    id: 'komodo-dragon',
+    name: 'Komodo Dragon',
+    image: '/images/komodo-dragon.jpg',
+    color: 'from-green-100 to-lime-200',
+    icon: '🦎'
+  },
 ]; 

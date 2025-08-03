@@ -40,6 +40,11 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
           opacity: isDragging ? 0.5 : 1,
           boxSizing: 'border-box',
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          MozUserSelect: 'none',
+          msUserSelect: 'none',
+          WebkitTouchCallout: 'none',
         }}
       />
     );
@@ -48,7 +53,15 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={{
+        ...style,
+        touchAction: 'none',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+      }}
       {...attributes}
       {...listeners}
       className="w-full h-full"

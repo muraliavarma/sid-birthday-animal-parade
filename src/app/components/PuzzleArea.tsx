@@ -33,6 +33,9 @@ function DropZone({ position, piece, puzzleImage }: {
             ? 'border-green-500 bg-green-200/30 shadow-sm shadow-green-400/20' 
             : 'border-amber-300/30 bg-amber-100/10'
       }`}
+      style={{
+        touchAction: 'none',
+      }}
     >
       {piece ? (
         <DraggablePuzzlePiece piece={piece} puzzleImage={puzzleImage} />
@@ -60,6 +63,7 @@ export function DroppablePuzzleArea({ pieces, puzzleImage, bgColor, isComplete =
         gap: '0',
         padding: '0',
         boxSizing: 'border-box',
+        touchAction: 'none',
         ...(isComplete && {
           boxShadow: '0 0 30px rgba(251, 191, 36, 0.6), 0 0 60px rgba(251, 191, 36, 0.3)',
         })

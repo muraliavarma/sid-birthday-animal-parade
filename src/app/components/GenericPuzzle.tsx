@@ -4,6 +4,8 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
+  TouchSensor,
+  KeyboardSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -32,9 +34,16 @@ export default function GenericPuzzle() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 5,
       },
-    })
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 50,
+        tolerance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor)
   );
 
   const handlePuzzleSelect = (puzzle: PuzzleConfig) => {

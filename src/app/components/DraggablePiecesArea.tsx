@@ -38,6 +38,9 @@ export function DraggablePiecesArea({ pieces, puzzleImage }: DraggablePiecesArea
       className={`w-full h-64 bg-gradient-to-br from-pink-200 to-purple-200 rounded-xl p-6 transition-colors relative overflow-hidden ${
         isOver ? 'bg-gradient-to-br from-pink-300 to-purple-300' : ''
       }`}
+      style={{
+        touchAction: 'none',
+      }}
     >
       <div className="text-center text-purple-800 font-semibold mb-4 text-lg">
         Drag pieces to the puzzle above
@@ -55,6 +58,7 @@ export function DraggablePiecesArea({ pieces, puzzleImage }: DraggablePiecesArea
                 top: `calc(50% + ${position.y}px)`,
                 transform: `translate(-50%, -50%) rotate(${position.rotation}deg)`,
                 zIndex: Math.floor(Math.random() * 5),
+                touchAction: 'none',
               }}
             >
               <DraggablePuzzlePiece piece={piece} puzzleImage={puzzleImage} />

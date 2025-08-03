@@ -1,5 +1,20 @@
 @import 'tailwindcss';
 
+/* Global touch handling for Android compatibility */
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Ensure drag elements don't interfere with touch events */
+[data-dnd-kit-draggable] {
+  touch-action: none;
+}
+
 /* Animation delay classes for random timing */
 .animation-delay-0 {
   animation-delay: 0s;
