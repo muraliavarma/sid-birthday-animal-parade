@@ -1,0 +1,14 @@
+export { HomeScreen } from './HomeScreen';
+export { GameScreen } from './GameScreen';
+export { FloatingAnimals } from './FloatingAnimals';
+export { TwinklingStars } from './TwinklingStars';
+export { Balloon } from './Balloon';
+export { Candle } from './Candle';
+export { BirthdayCake } from './BirthdayCake';
+export { StartGameButton } from './StartGameButton';
+export { ConfettiComponent } from './Confetti';
+export { DraggablePuzzlePiece } from './PuzzlePiece';
+export { DroppablePuzzleArea } from './PuzzleArea';
+export { PuzzleSelector } from './PuzzleSelector';
+export { CompletionModal } from './CompletionModal';
+export { default as GenericPuzzle } from './GenericPuzzle'; 
