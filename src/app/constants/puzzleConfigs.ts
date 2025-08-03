@@ -43,4 +43,11 @@ export const PUZZLE_CONFIGS: PuzzleConfig[] = [
     color: 'from-green-100 to-lime-200',
     icon: '🦎'
   },
+  {
+    id: 'panda',
+    name: 'Panda',
+    image: '/images/panda.webp',
+    color: 'from-gray-100 to-green-200',
+    icon: '🐼'
+  }
 ]; 

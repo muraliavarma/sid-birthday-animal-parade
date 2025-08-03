@@ -54,7 +54,7 @@ export const PuzzleSelectionGrid = ({ puzzles, onPuzzleSelect, currentPuzzleId }
             )}
             
             {/* Puzzle icon */}
-            <div className="text-3xl mb-2">{puzzle.icon}</div>
+            <div className="text-2xl mb-2">{puzzle.icon}</div>
             
             {/* Puzzle name */}
             <div className={`text-xs font-bold ${puzzle.isCompleted ? 'text-green-800' : 'text-blue-800'}`}>

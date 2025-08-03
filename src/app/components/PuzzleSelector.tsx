@@ -49,7 +49,7 @@ export function PuzzleSelector({ selectedPuzzle, onPuzzleChange }: PuzzleSelecto
             )}
             
             <span 
-              className="text-3xl"
+              className="text-2xl"
               style={{ filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.4))' }}
             >
               {puzzle.icon}
