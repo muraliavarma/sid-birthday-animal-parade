@@ -1,5 +1,30 @@
 @import 'tailwindcss';
 
+/* Prevent zooming, scrolling, and orientation changes */
+html {
+  overflow: hidden;
+  touch-action: none;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  text-size-adjust: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  touch-action: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+
 /* Global touch handling for Android compatibility */
 * {
   -webkit-touch-callout: none;
@@ -8,6 +33,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: none;
 }
 
 /* Ensure drag elements don't interfere with touch events */

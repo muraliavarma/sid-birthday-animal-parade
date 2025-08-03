@@ -63,5 +63,12 @@ export const PUZZLE_CONFIGS: PuzzleConfig[] = [
     image: '/images/shark.png',
     color: 'from-blue-100 to-cyan-200',
     icon: '🦈'
+  },
+  {
+    id: 'sloth-bear',
+    name: 'Sloth Bear',
+    image: '/images/sloth-bear.png',
+    color: 'from-gray-100 to-green-200',
+    icon: '🐻'
   }
 ]; 
