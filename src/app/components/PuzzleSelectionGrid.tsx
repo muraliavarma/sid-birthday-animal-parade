@@ -24,18 +24,18 @@ export const PuzzleSelectionGrid = ({ puzzles, onPuzzleSelect, currentPuzzleId }
   });
 
   return (
-    <div className="mt-6">
-      <h3 className="text-lg font-semibold text-white mb-4 text-center">
+    <div className="mt-3">
+      <h3 className="text-lg font-semibold text-white mb-2 text-center">
         Try Another Puzzle! 🧩
       </h3>
       
-      <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
+      <div className="grid grid-cols-3 gap-2 max-w-md mx-auto">
         {sortedPuzzles.map((puzzle) => (
           <button
             key={puzzle.id}
             onClick={() => onPuzzleSelect(puzzle)}
             className={`
-              relative p-3 rounded-xl transition-all duration-300 transform hover:scale-105
+              relative p-2 rounded-xl transition-all duration-300 transform hover:scale-105
               ${puzzle.isCompleted 
                 ? 'bg-gradient-to-br from-green-200 to-green-400 shadow-lg' 
                 : 'bg-gradient-to-br from-blue-200 to-purple-400 shadow-lg hover:shadow-xl'
@@ -48,13 +48,13 @@ export const PuzzleSelectionGrid = ({ puzzles, onPuzzleSelect, currentPuzzleId }
           >
             {/* Completion indicator */}
             {puzzle.isCompleted && (
-              <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-lg">
+              <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow-lg">
                 ✓
               </div>
             )}
             
             {/* Puzzle icon */}
-            <div className="text-2xl mb-2">{puzzle.icon}</div>
+            <div className="text-lg mb-1">{puzzle.icon}</div>
             
             {/* Puzzle name */}
             <div className={`text-xs font-bold ${puzzle.isCompleted ? 'text-green-800' : 'text-blue-800'}`}>
@@ -70,7 +70,7 @@ export const PuzzleSelectionGrid = ({ puzzles, onPuzzleSelect, currentPuzzleId }
       </div>
       
       {/* Summary text */}
-      <div className="text-center mt-4 text-white/90 text-sm">
+      <div className="text-center mt-2 text-white/90 text-sm">
         {sortedPuzzles.filter(p => !p.isCompleted).length > 0 ? (
           <span>
             {sortedPuzzles.filter(p => !p.isCompleted).length} more puzzle{sortedPuzzles.filter(p => !p.isCompleted).length !== 1 ? 's' : ''} to complete! 🎯

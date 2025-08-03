@@ -21,8 +21,8 @@ export function PuzzleSelector({ selectedPuzzle, onPuzzleChange }: PuzzleSelecto
   });
 
   return (
-    <div className="mb-4">
-      <div className="text-center text-2xl font-bold text-purple-800 mb-2">
+    <div className="mb-3">
+      <div className="text-center text-xl font-bold text-purple-800 mb-1">
         {selectedPuzzle.name}
       </div>
       <div className="flex gap-2 justify-center flex-wrap">
@@ -49,7 +49,7 @@ export function PuzzleSelector({ selectedPuzzle, onPuzzleChange }: PuzzleSelecto
             )}
             
             <span 
-              className="text-2xl"
+              className="text-md"
               style={{ filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.4))' }}
             >
               {puzzle.icon}
@@ -59,7 +59,7 @@ export function PuzzleSelector({ selectedPuzzle, onPuzzleChange }: PuzzleSelecto
       </div>
       
       {/* Progress indicator */}
-      <div className="text-center mt-2 text-sm text-purple-700">
+      <div className="text-center mt-1 text-sm text-purple-700">
         {availablePuzzles.filter(p => p.isCompleted).length} of {availablePuzzles.length} completed
       </div>
     </div>

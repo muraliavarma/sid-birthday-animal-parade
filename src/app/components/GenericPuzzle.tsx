@@ -51,7 +51,7 @@ export default function GenericPuzzle() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-start pt-4">
+    <div className="w-full h-full flex flex-col items-center justify-start pt-2">
       {/* Puzzle Selector */}
       <PuzzleSelector 
         selectedPuzzle={selectedPuzzle}
@@ -64,7 +64,7 @@ export default function GenericPuzzle() {
         onDragEnd={handleDragEnd}
       >
         {/* Puzzle Area */}
-        <div className="mb-4">
+        <div className="mb-3">
           <DroppablePuzzleArea 
             pieces={pieces}
             puzzleImage={selectedPuzzle.image}
