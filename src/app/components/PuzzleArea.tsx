@@ -23,7 +23,7 @@ function DropZone({ position, piece, puzzleImage }: {
   return (
     <div
       ref={setNodeRef}
-      className={`w-24 h-24 border-2 border-dashed rounded-lg flex items-center justify-center transition-colors ${
+      className={`w-full h-full border border-dashed border-amber-400/50 flex items-center justify-center transition-colors ${
         piece 
           ? isCorrectPosition 
             ? 'border-green-500 bg-green-200/50' // Correct placement
@@ -47,12 +47,12 @@ function DropZone({ position, piece, puzzleImage }: {
 export function DroppablePuzzleArea({ pieces, puzzleImage, bgColor }: DroppablePuzzleAreaProps) {
   return (
     <div 
-      className={`puzzle-area w-72 h-72 bg-gradient-to-br ${bgColor} rounded-xl border-4 border-amber-300 p-2`}
+      className={`puzzle-area w-72 h-72 bg-gradient-to-br ${bgColor} rounded-xl`}
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gridTemplateRows: 'repeat(3, 1fr)',
-        gap: '4px',
+        gap: '0',
       }}
     >
       {Array.from({ length: 9 }, (_, i) => {
