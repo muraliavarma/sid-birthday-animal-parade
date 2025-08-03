@@ -42,12 +42,14 @@ export const HomeScreen = ({
       {/* Twinkling Stars */}
       <TwinklingStars />
 
-      <div className="text-center z-10">
+      <div className="text-center z-10 flex flex-col items-center justify-center">
         {/* Giant Birthday Cake */}
-        <BirthdayCake candlesBlown={candlesBlown} onBlowCandle={onBlowCandle} />
+        <div className="flex justify-center mb-4">
+          <BirthdayCake candlesBlown={candlesBlown} onBlowCandle={onBlowCandle} />
+        </div>
 
         {/* Giant Birthday Text */}
-        <h1 className="text-6xl sm:text-7xl font-extrabold mb-6 drop-shadow-2xl animate-bounce bg-gradient-to-r from-yellow-200 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+        <h1 className="text-6xl sm:text-7xl font-extrabold mb-6 drop-shadow-2xl animate-bounce bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
           🎉 SID! 🎉
         </h1>
 
@@ -62,11 +64,6 @@ export const HomeScreen = ({
           <p className="text-2xl text-white/90 mt-4 font-semibold">
             🎁 Click the candles &amp; balloons for surprises! 🎁
           </p>
-        </div>
-
-        {/* Fun Emojis */}
-        <div className="mt-10 text-7xl animate-bounce space-x-2">
-          🦄 🦕 🚀 🎪 🎨 🐼 🐯
         </div>
       </div>
     </div>
