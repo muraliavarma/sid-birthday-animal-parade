@@ -20,7 +20,7 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    zIndex: isDragging ? 1000 : piece.isPlaced ? 1 : 10,
+    zIndex: isDragging ? 1000 : 10,
   };
 
   const getPieceContent = () => {
@@ -34,11 +34,10 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
           backgroundImage: `url(${puzzleImage})`,
           backgroundSize: '300px 300px',
           backgroundPosition: `-${col * 100}px -${row * 100}px`,
-          border: piece.isPlaced ? 'none' : '2px solid #6B7280',
+          border: '2px solid #6B7280',
           borderRadius: '8px',
-          cursor: piece.isPlaced ? 'default' : 'grab',
-          boxShadow: piece.isPlaced ? 'none' : '0 2px 8px rgba(0, 0, 0, 0.2)',
-          transition: piece.isPlaced ? 'all 0.3s ease' : 'none',
+          cursor: 'grab',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
           opacity: isDragging ? 0.5 : 1,
         }}
       />
@@ -51,16 +50,9 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
       style={style}
       {...attributes}
       {...listeners}
-      className=""
+      className="w-24 h-24"
     >
-      <div
-        style={{
-          width: '100px',
-          height: '100px',
-        }}
-      >
-        {getPieceContent()}
-      </div>
+      {getPieceContent()}
     </div>
   );
 } 

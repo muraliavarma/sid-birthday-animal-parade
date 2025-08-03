@@ -1,18 +1,71 @@
 import { useDroppable } from '@dnd-kit/core';
+import { PuzzlePiece } from '../types';
+import { DraggablePuzzlePiece } from './PuzzlePiece';
 
 interface DroppablePuzzleAreaProps {
-  children: React.ReactNode;
+  pieces: PuzzlePiece[];
+  puzzleImage: string;
   bgColor: string;
 }
 
-export function DroppablePuzzleArea({ children, bgColor }: DroppablePuzzleAreaProps) {
-  const { setNodeRef } = useDroppable({
-    id: 'puzzle-area',
+function DropZone({ position, piece, puzzleImage }: { 
+  position: number; 
+  piece?: PuzzlePiece; 
+  puzzleImage: string; 
+}) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: `drop-zone-${position}`,
   });
 
+  // Check if the piece is in the correct position
+  const isCorrectPosition = piece && piece.id === position;
+
   return (
-    <div ref={setNodeRef} className={`puzzle-area relative w-[300px] h-[300px] bg-gradient-to-br ${bgColor} rounded-xl border-4 border-amber-300`}>
-      {children}
+    <div
+      ref={setNodeRef}
+      className={`w-24 h-24 border-2 border-dashed rounded-lg flex items-center justify-center transition-colors ${
+        piece 
+          ? isCorrectPosition 
+            ? 'border-green-500 bg-green-200/50' // Correct placement
+            : 'border-red-500 bg-red-200/50'     // Wrong placement
+          : isOver 
+            ? 'border-green-500 bg-green-200/50' 
+            : 'border-amber-400/50 bg-amber-200/20'
+      }`}
+    >
+      {piece ? (
+        <DraggablePuzzlePiece piece={piece} puzzleImage={puzzleImage} />
+      ) : (
+        <div className="text-amber-600/50 text-xs font-medium">
+          {position + 1}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function DroppablePuzzleArea({ pieces, puzzleImage, bgColor }: DroppablePuzzleAreaProps) {
+  return (
+    <div 
+      className={`puzzle-area w-72 h-72 bg-gradient-to-br ${bgColor} rounded-xl border-4 border-amber-300 p-2`}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gridTemplateRows: 'repeat(3, 1fr)',
+        gap: '4px',
+      }}
+    >
+      {Array.from({ length: 9 }, (_, i) => {
+        const piece = pieces.find(p => p.position === i && p.isPlaced);
+        return (
+          <DropZone 
+            key={i}
+            position={i}
+            piece={piece}
+            puzzleImage={puzzleImage}
+          />
+        );
+      })}
     </div>
   );
 } 

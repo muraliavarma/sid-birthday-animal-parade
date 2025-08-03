@@ -6,22 +6,27 @@ interface PuzzleSelectorProps {
   onPuzzleChange: (puzzle: PuzzleConfig) => void;
 }
 
-export const PuzzleSelector = ({ puzzleConfigs, selectedPuzzle, onPuzzleChange }: PuzzleSelectorProps) => {
+export function PuzzleSelector({ puzzleConfigs, selectedPuzzle, onPuzzleChange }: PuzzleSelectorProps) {
   return (
-    <div className="mb-2 flex gap-3 justify-center">
-      {puzzleConfigs.map((puzzle) => (
-        <button
-          key={puzzle.id}
-          onClick={() => onPuzzleChange(puzzle)}
-          className={`text-4xl p-3 rounded-full transition-all duration-200 ${
-            selectedPuzzle.id === puzzle.id
-              ? 'bg-gradient-to-r from-orange-400 to-red-500 shadow-lg scale-110'
-              : 'bg-white/80 hover:bg-white shadow-md hover:scale-105'
-          }`}
-        >
-          {puzzle.icon}
-        </button>
-      ))}
+    <div className="mb-4">
+      <div className="text-center text-2xl font-bold text-purple-800 mb-2">
+        {selectedPuzzle.name}
+      </div>
+      <div className="flex gap-2 justify-center">
+        {puzzleConfigs.map(puzzle => (
+          <button
+            key={puzzle.id}
+            onClick={() => onPuzzleChange(puzzle)}
+            className={`p-2 rounded-lg transition-colors ${
+              selectedPuzzle.id === puzzle.id
+                ? 'bg-purple-500 text-white'
+                : 'bg-purple-200 text-purple-800 hover:bg-purple-300'
+            }`}
+          >
+            {puzzle.icon}
+          </button>
+        ))}
+      </div>
     </div>
   );
-}; 
+} 

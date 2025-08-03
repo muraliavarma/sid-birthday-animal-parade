@@ -9,6 +9,7 @@ export { StartGameButton } from './StartGameButton';
 export { ConfettiComponent } from './Confetti';
 export { DraggablePuzzlePiece } from './PuzzlePiece';
 export { DroppablePuzzleArea } from './PuzzleArea';
+export { DraggablePiecesArea } from './DraggablePiecesArea';
 export { PuzzleSelector } from './PuzzleSelector';
 export { CompletionModal } from './CompletionModal';
 export { default as GenericPuzzle } from './GenericPuzzle'; 

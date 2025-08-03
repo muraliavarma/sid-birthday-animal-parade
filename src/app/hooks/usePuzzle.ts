@@ -10,29 +10,15 @@ export const usePuzzle = () => {
   const [activeId, setActiveId] = useState<number | null>(null);
 
   const initializePuzzle = useCallback(() => {
-    const newPieces: PuzzlePiece[] = [];
-    const gridSize = 3;
-    const pieceSize = 100;
+    // Create 9 pieces with random positions (0-8)
+    const positions = Array.from({ length: 9 }, (_, i) => i);
+    const shuffledPositions = [...positions].sort(() => Math.random() - 0.5);
     
-    for (let i = 0; i < 9; i++) {
-      const row = Math.floor(i / gridSize);
-      const col = i % gridSize;
-      const correctX = col * pieceSize;
-      const correctY = row * pieceSize;
-      
-      // Random starting positions around the puzzle area
-      const randomX = Math.random() * 200 + 50;
-      const randomY = Math.random() * 200 + 50;
-      
-      newPieces.push({
-        id: i,
-        x: randomX,
-        y: randomY,
-        correctX,
-        correctY,
-        isPlaced: false
-      });
-    }
+    const newPieces: PuzzlePiece[] = shuffledPositions.map((position, index) => ({
+      id: index,
+      position,
+      isPlaced: false
+    }));
     
     setPieces(newPieces);
     setIsComplete(false);
@@ -43,8 +29,9 @@ export const usePuzzle = () => {
   }, [selectedPuzzle, initializePuzzle]);
 
   useEffect(() => {
-    const allPlaced = pieces.every(p => p.isPlaced);
-    if (allPlaced && pieces.length > 0) {
+    // Check if puzzle is complete - all pieces should be in their correct positions
+    const allCorrect = pieces.every(piece => piece.isPlaced && piece.position === piece.id);
+    if (allCorrect && pieces.length > 0) {
       setIsComplete(true);
     }
   }, [pieces]);
@@ -57,41 +44,30 @@ export const usePuzzle = () => {
     const { active, over } = event;
     setActiveId(null);
 
-    const activePiece = pieces.find(p => p.id === active.id);
-    if (!activePiece) {
-      return;
-    }
+    if (!over) return;
 
-    // Check if dropped on puzzle area using @dnd-kit's over detection
-    if (over?.id === 'puzzle-area') {
-      // Place the piece in its correct position within the puzzle area
+    const activePiece = pieces.find(p => p.id === active.id);
+    if (!activePiece) return;
+
+    // Check if dropped on a valid drop zone
+    const dropZoneId = over.id as string;
+    
+    if (dropZoneId.startsWith('drop-zone-')) {
+      const targetPosition = parseInt(dropZoneId.replace('drop-zone-', ''));
+      
+      // Place the piece in the dropped position
       setPieces(prev => prev.map(p => 
         p.id === active.id 
-          ? { ...p, x: p.correctX, y: p.correctY, isPlaced: true }
+          ? { ...p, position: targetPosition, isPlaced: true }
           : p
       ));
-    } else {
-      // Fallback: check if mouse is over puzzle area
-      const puzzleArea = document.querySelector('.puzzle-area');
-      if (puzzleArea) {
-        const puzzleRect = puzzleArea.getBoundingClientRect();
-        const mouseEvent = event.activatorEvent as MouseEvent;
-        const mouseX = mouseEvent?.clientX || 0;
-        const mouseY = mouseEvent?.clientY || 0;
-        
-        const tolerance = 50;
-        const isOverPuzzleArea = 
-          mouseX >= puzzleRect.left - tolerance && mouseX <= puzzleRect.right + tolerance &&
-          mouseY >= puzzleRect.top - tolerance && mouseY <= puzzleRect.bottom + tolerance;
-        
-        if (isOverPuzzleArea) {
-          setPieces(prev => prev.map(p => 
-            p.id === active.id 
-              ? { ...p, x: p.correctX, y: p.correctY, isPlaced: true }
-              : p
-          ));
-        }
-      }
+    } else if (dropZoneId === 'draggable-area') {
+      // Dropped back in the draggable area - keep piece unplaced
+      setPieces(prev => prev.map(p => 
+        p.id === active.id 
+          ? { ...p, isPlaced: false }
+          : p
+      ));
     }
   }, [pieces]);
 
