@@ -55,14 +55,37 @@ export const usePuzzle = () => {
     if (dropZoneId.startsWith('drop-zone-')) {
       const targetPosition = parseInt(dropZoneId.replace('drop-zone-', ''));
       
-      // Place the piece in the dropped position
-      setPieces(prev => prev.map(p => 
-        p.id === active.id 
-          ? { ...p, position: targetPosition, isPlaced: true }
-          : p
-      ));
+      // Find if there's already a piece at the target position
+      const existingPiece = pieces.find(p => p.isPlaced && p.position === targetPosition);
+      
+      if (existingPiece) {
+        // Swap the pieces
+        setPieces(prev => prev.map(p => {
+          if (p.id === active.id) {
+            // Move the dragged piece to the target position
+            return { ...p, position: targetPosition, isPlaced: true };
+          } else if (p.id === existingPiece.id) {
+            // Handle the existing piece based on where the dragged piece came from
+            if (!activePiece.isPlaced) {
+              // Dragged piece came from draggable area, so existing piece goes to draggable area
+              return { ...p, isPlaced: false };
+            } else {
+              // Dragged piece came from another position, so swap positions
+              return { ...p, position: activePiece.position, isPlaced: true };
+            }
+          }
+          return p;
+        }));
+      } else {
+        // Place the piece in the empty position
+        setPieces(prev => prev.map(p => 
+          p.id === active.id 
+            ? { ...p, position: targetPosition, isPlaced: true }
+            : p
+        ));
+      }
     } else if (dropZoneId === 'draggable-area') {
-      // Dropped back in the draggable area - keep piece unplaced
+      // Dropped back in the draggable area
       setPieces(prev => prev.map(p => 
         p.id === active.id 
           ? { ...p, isPlaced: false }
