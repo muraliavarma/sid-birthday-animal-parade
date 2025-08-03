@@ -24,14 +24,14 @@ function DropZone({ position, piece, puzzleImage }: {
   return (
     <div
       ref={setNodeRef}
-      className={`w-full h-full border border-dashed border-amber-400/50 flex items-center justify-center transition-colors ${
+      className={`w-full h-full border border-dashed flex items-center justify-center transition-all duration-300 ${
         piece 
           ? isCorrectPosition 
-            ? 'border-green-500 bg-green-200/50' // Correct placement
-            : 'border-red-500 bg-red-200/50'     // Wrong placement
+            ? 'border-green-500 bg-green-200/40 shadow-sm shadow-green-400/20' // Correct placement - subtle
+            : 'border-red-600 bg-red-300/90 shadow-xl shadow-red-400/60 animate-incorrect-glow animate-placement-shake'     // Wrong placement - very prominent
           : isOver 
-            ? 'border-green-500 bg-green-200/50' 
-            : 'border-amber-400/50 bg-amber-200/20'
+            ? 'border-green-500 bg-green-200/30 shadow-sm shadow-green-400/20' 
+            : 'border-amber-300/30 bg-amber-100/10'
       }`}
     >
       {piece ? (
