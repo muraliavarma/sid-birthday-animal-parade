@@ -26,7 +26,7 @@ export const HomeScreen = ({
   onPopBalloon,
 }: HomeScreenProps) => {
   return (
-    <div className="w-screen h-screen bg-gradient-to-b from-pink-400 via-fuchsia-500 to-blue-400 overflow-hidden flex items-center justify-center relative">
+    <div className="w-screen h-screen bg-gradient-to-b from-purple-400 via-pink-500 to-purple-600 overflow-hidden flex items-center justify-center relative">
       {/* Confetti */}
       <ConfettiComponent dimensions={dimensions} isActive={confettiActive} />
 
@@ -48,23 +48,16 @@ export const HomeScreen = ({
           <BirthdayCake candlesBlown={candlesBlown} onBlowCandle={onBlowCandle} />
         </div>
 
-        {/* Giant Birthday Text */}
-        <h1 className="text-6xl sm:text-7xl font-extrabold mb-6 drop-shadow-2xl animate-bounce bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
-          🎉 SID! 🎉
-        </h1>
+        {/* Birthday Text with better contrast */}
+        <div className="mb-6">
+          <h1 className="text-3xl sm:text-4xl font-extrabold drop-shadow-2xl animate-bounce">
+            🎉 <span className="bg-gradient-to-r from-yellow-200 via-orange-300 to-yellow-100 bg-clip-text text-transparent">Happy Birthday Sid! </span> 🎉
+          </h1>
+        </div>
 
         {/* Super Fun Button */}
         <StartGameButton onClick={onStartGame} />
 
-        {/* Birthday Message */}
-        <div className="mt-10">
-          <p className="text-4xl text-white font-extrabold drop-shadow-lg animate-pulse">
-            🎂 Happy 5th Birthday, Sid! 🎂
-          </p>
-          <p className="text-2xl text-white/90 mt-4 font-semibold">
-            🎁 Click the candles &amp; balloons for surprises! 🎁
-          </p>
-        </div>
       </div>
     </div>
   );
