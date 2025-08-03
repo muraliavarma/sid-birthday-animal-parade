@@ -7,6 +7,7 @@ export const usePuzzle = () => {
   const [selectedPuzzle, setSelectedPuzzle] = useState<PuzzleConfig>(PUZZLE_CONFIGS[0]);
   const [pieces, setPieces] = useState<PuzzlePiece[]>([]);
   const [isComplete, setIsComplete] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [activeId, setActiveId] = useState<number | null>(null);
 
   const initializePuzzle = useCallback(() => {
@@ -22,6 +23,7 @@ export const usePuzzle = () => {
     
     setPieces(newPieces);
     setIsComplete(false);
+    setShowCompletionModal(false);
   }, []);
 
   useEffect(() => {
@@ -31,8 +33,13 @@ export const usePuzzle = () => {
   useEffect(() => {
     // Check if puzzle is complete - all pieces should be in their correct positions
     const allCorrect = pieces.every(piece => piece.isPlaced && piece.position === piece.id);
+    
     if (allCorrect && pieces.length > 0) {
       setIsComplete(true);
+      // Add a delay before showing the completion modal so we can see the finished puzzle
+      setTimeout(() => {
+        setShowCompletionModal(true);
+      }, 2000); // 2 second pause to admire the finished puzzle
     }
   }, [pieces]);
 
@@ -96,6 +103,7 @@ export const usePuzzle = () => {
 
   const resetPuzzle = useCallback(() => {
     setIsComplete(false);
+    setShowCompletionModal(false);
     initializePuzzle();
   }, [initializePuzzle]);
 
@@ -107,6 +115,7 @@ export const usePuzzle = () => {
     selectedPuzzle,
     pieces,
     isComplete,
+    showCompletionModal,
     activeId,
     handleDragStart,
     handleDragEnd,

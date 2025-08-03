@@ -6,6 +6,7 @@ interface DroppablePuzzleAreaProps {
   pieces: PuzzlePiece[];
   puzzleImage: string;
   bgColor: string;
+  isComplete?: boolean;
 }
 
 function DropZone({ position, piece, puzzleImage }: { 
@@ -44,15 +45,22 @@ function DropZone({ position, piece, puzzleImage }: {
   );
 }
 
-export function DroppablePuzzleArea({ pieces, puzzleImage, bgColor }: DroppablePuzzleAreaProps) {
+export function DroppablePuzzleArea({ pieces, puzzleImage, bgColor, isComplete = false }: DroppablePuzzleAreaProps) {
   return (
     <div 
-      className={`puzzle-area w-72 h-72 bg-gradient-to-br ${bgColor} rounded-xl`}
+      className={`puzzle-area w-72 h-72 bg-gradient-to-br ${bgColor} rounded-xl transition-all duration-1000 ${
+        isComplete 
+          ? 'shadow-2xl shadow-yellow-400/50 animate-pulse' 
+          : 'shadow-lg'
+      }`}
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gridTemplateRows: 'repeat(3, 1fr)',
         gap: '0',
+        ...(isComplete && {
+          boxShadow: '0 0 30px rgba(251, 191, 36, 0.6), 0 0 60px rgba(251, 191, 36, 0.3)',
+        })
       }}
     >
       {Array.from({ length: 9 }, (_, i) => {

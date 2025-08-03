@@ -20,6 +20,7 @@ export default function GenericPuzzle() {
     selectedPuzzle,
     pieces,
     isComplete,
+    showCompletionModal,
     activeId,
     handleDragStart,
     handleDragEnd,
@@ -55,6 +56,7 @@ export default function GenericPuzzle() {
             pieces={pieces}
             puzzleImage={selectedPuzzle.image}
             bgColor={selectedPuzzle.color}
+            isComplete={isComplete}
           />
         </div>
 
@@ -77,12 +79,11 @@ export default function GenericPuzzle() {
       </DndContext>
 
       {/* Completion Modal */}
-      {isComplete && (
-        <CompletionModal 
-          puzzleName={selectedPuzzle.name}
-          onPlayAgain={resetPuzzle}
-        />
-      )}
+      <CompletionModal 
+        puzzleName={selectedPuzzle.name}
+        onPlayAgain={resetPuzzle}
+        isVisible={showCompletionModal}
+      />
     </div>
   );
 } 
