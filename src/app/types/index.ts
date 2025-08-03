@@ -17,6 +17,10 @@ export interface PuzzleConfig {
   icon: string;
 }
 
+export interface PuzzleConfigWithStatus extends PuzzleConfig {
+  isCompleted: boolean;
+}
+
 export interface GameState {
   gameStarted: boolean;
   confettiActive: boolean;

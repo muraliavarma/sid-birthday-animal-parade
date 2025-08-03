@@ -14,6 +14,7 @@ import { PuzzleSelector } from './PuzzleSelector';
 import { CompletionModal } from './CompletionModal';
 import { usePuzzle } from '../hooks/usePuzzle';
 import { PUZZLE_CONFIGS } from '../constants/puzzleConfigs';
+import { PuzzleConfig } from '../types';
 
 export default function GenericPuzzle() {
   const {
@@ -36,11 +37,14 @@ export default function GenericPuzzle() {
     })
   );
 
+  const handlePuzzleSelect = (puzzle: PuzzleConfig) => {
+    handlePuzzleChange(puzzle);
+  };
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-start pt-4">
       {/* Puzzle Selector */}
       <PuzzleSelector 
-        puzzleConfigs={PUZZLE_CONFIGS}
         selectedPuzzle={selectedPuzzle}
         onPuzzleChange={handlePuzzleChange}
       />
@@ -81,7 +85,9 @@ export default function GenericPuzzle() {
       {/* Completion Modal */}
       <CompletionModal 
         puzzleName={selectedPuzzle.name}
+        puzzleId={selectedPuzzle.id}
         onPlayAgain={resetPuzzle}
+        onPuzzleSelect={handlePuzzleSelect}
         isVisible={showCompletionModal}
       />
     </div>

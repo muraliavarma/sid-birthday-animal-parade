@@ -1,23 +1,39 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { PuzzleSelectionGrid } from './PuzzleSelectionGrid';
+import { useCompletedPuzzles } from '../contexts/CompletedPuzzlesContext';
+import { PuzzleConfig } from '../types';
 
 interface CompletionModalProps {
   puzzleName: string;
+  puzzleId: string;
   onPlayAgain: () => void;
+  onPuzzleSelect: (puzzle: PuzzleConfig) => void;
   isVisible: boolean;
 }
 
-export const CompletionModal = ({ puzzleName, onPlayAgain, isVisible }: CompletionModalProps) => {
+export const CompletionModal = ({ 
+  puzzleName, 
+  puzzleId, 
+  onPlayAgain, 
+  onPuzzleSelect, 
+  isVisible 
+}: CompletionModalProps) => {
   const [showContent, setShowContent] = useState(false);
   const [showButton, setShowButton] = useState(false);
+  const [showPuzzleGrid, setShowPuzzleGrid] = useState(false);
   const [particles, setParticles] = useState<Array<{id: number, x: number, y: number, emoji: string}>>([]);
+  
+  const { getAvailablePuzzles } = useCompletedPuzzles();
+  const availablePuzzles = getAvailablePuzzles();
 
   useEffect(() => {
     if (isVisible) {
       // Stagger the animations
       setTimeout(() => setShowContent(true), 300);
       setTimeout(() => setShowButton(true), 800);
+      setTimeout(() => setShowPuzzleGrid(true), 1200);
       
       // Create floating celebration particles
       const newParticles = Array.from({ length: 20 }, (_, i) => ({
@@ -30,9 +46,14 @@ export const CompletionModal = ({ puzzleName, onPlayAgain, isVisible }: Completi
     } else {
       setShowContent(false);
       setShowButton(false);
+      setShowPuzzleGrid(false);
       setParticles([]);
     }
   }, [isVisible]);
+
+  const handlePuzzleSelect = (puzzle: PuzzleConfig) => {
+    onPuzzleSelect(puzzle);
+  };
 
   if (!isVisible) return null;
 
@@ -54,7 +75,7 @@ export const CompletionModal = ({ puzzleName, onPlayAgain, isVisible }: Completi
         </div>
       ))}
 
-      <div className="bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-400 p-8 rounded-3xl text-center shadow-2xl mx-4 animate-bounce-in relative z-20">
+      <div className="bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-400 p-8 rounded-3xl text-center shadow-2xl mx-4 animate-bounce-in relative z-20 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Floating celebration elements */}
         <div className="absolute -top-4 -left-4 text-4xl animate-bounce">🎈</div>
         <div className="absolute -top-4 -right-4 text-4xl animate-bounce" style={{ animationDelay: '0.2s' }}>🎊</div>
@@ -85,11 +106,20 @@ export const CompletionModal = ({ puzzleName, onPlayAgain, isVisible }: Completi
           </div>
         </div>
 
+        {/* Puzzle Selection Grid */}
+        <div className={`transform transition-all duration-700 ${showPuzzleGrid ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+          <PuzzleSelectionGrid
+            puzzles={availablePuzzles}
+            onPuzzleSelect={handlePuzzleSelect}
+            currentPuzzleId={puzzleId}
+          />
+        </div>
+
         {/* Button with delayed animation - made more visible */}
         <div className={`transform transition-all duration-500 ${showButton ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
           <button
             onClick={onPlayAgain}
-            className="bg-white text-orange-600 px-8 py-4 rounded-full font-bold text-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:rotate-2 border-4 border-orange-400"
+            className="bg-white text-orange-600 px-8 py-4 rounded-full font-bold text-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:rotate-2 border-4 border-orange-400 mt-4"
           >
             Play Again! 🧩
           </button>

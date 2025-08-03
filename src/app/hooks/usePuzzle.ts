@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { PuzzlePiece, PuzzleConfig } from '../types';
 import { PUZZLE_CONFIGS } from '../constants/puzzleConfigs';
 import { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
+import { useCompletedPuzzles } from '../contexts/CompletedPuzzlesContext';
 
 export const usePuzzle = () => {
   const [selectedPuzzle, setSelectedPuzzle] = useState<PuzzleConfig>(PUZZLE_CONFIGS[0]);
@@ -9,6 +10,7 @@ export const usePuzzle = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [activeId, setActiveId] = useState<number | null>(null);
+  const { markPuzzleAsCompleted } = useCompletedPuzzles();
 
   const initializePuzzle = useCallback(() => {
     // Create 9 pieces with random positions (0-8)
@@ -32,16 +34,22 @@ export const usePuzzle = () => {
 
   useEffect(() => {
     // Check if puzzle is complete - all pieces should be in their correct positions
-    const allCorrect = pieces.every(piece => piece.isPlaced && piece.position === piece.id);
+    // Only check if we have pieces and they're all placed
+    if (pieces.length === 0) return;
     
-    if (allCorrect && pieces.length > 0) {
+    const allCorrect = pieces.every(piece => piece.isPlaced && piece.position === piece.id);
+    const allPlaced = pieces.every(piece => piece.isPlaced);
+    
+    if (allCorrect && allPlaced && pieces.length > 0) {
       setIsComplete(true);
+      // Mark puzzle as completed
+      markPuzzleAsCompleted(selectedPuzzle.id);
       // Add a delay before showing the completion modal so we can see the finished puzzle
       setTimeout(() => {
         setShowCompletionModal(true);
       }, 2000); // 2 second pause to admire the finished puzzle
     }
-  }, [pieces]);
+  }, [pieces, selectedPuzzle.id, markPuzzleAsCompleted]);
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     setActiveId(event.active.id as number);
