@@ -21,5 +21,19 @@ export const PUZZLE_CONFIGS: PuzzleConfig[] = [
     image: '/images/tiger.webp',
     color: 'from-orange-100 to-red-200',
     icon: '🐯'
+  },
+  {
+    id: 'elephant',
+    name: 'Elephant',
+    image: '/images/elephant.png',
+    color: 'from-gray-100 to-gray-200',
+    icon: '🐘'
+  },
+  {
+    id: 'hippo',
+    name: 'Hippo',
+    image: '/images/hippo.avif',
+    color: 'from-gray-100 to-gray-200',
+    icon: '🦛'
   }
 ]; 
