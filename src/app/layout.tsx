@@ -21,11 +21,13 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-orientation" content="portrait" />
         <meta name="screen-orientation" content="portrait" />
         <meta name="x5-orientation" content="portrait" />
         <meta name="full-screen" content="yes" />
         <meta name="x5-fullscreen" content="true" />
         <meta name="360-fullscreen" content="true" />
+        <meta name="orientation" content="portrait" />
       </head>
       <body className={`${inter.className} overflow-hidden`}>{children}</body>
     </html>

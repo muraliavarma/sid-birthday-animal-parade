@@ -25,6 +25,16 @@ body {
   overscroll-behavior: none;
 }
 
+/* Prevent orientation changes by maintaining aspect ratio */
+@media screen and (orientation: landscape) {
+  html, body {
+    /* Instead of rotating, we'll maintain the portrait layout */
+    max-width: 100vh;
+    max-height: 100vw;
+    margin: auto;
+  }
+}
+
 /* Global touch handling for Android compatibility */
 * {
   -webkit-touch-callout: none;
