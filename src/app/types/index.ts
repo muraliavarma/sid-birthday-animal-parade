@@ -5,7 +5,7 @@ export interface Dimensions {
 
 export interface PuzzlePiece {
   id: number;
-  position: number; // 0-8 for 3x3 grid
+  position: number; // 0-15 for 4x4 grid
   isPlaced: boolean;
 }
 

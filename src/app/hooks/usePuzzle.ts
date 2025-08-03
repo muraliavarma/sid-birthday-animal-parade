@@ -13,8 +13,8 @@ export const usePuzzle = () => {
   const { markPuzzleAsCompleted } = useCompletedPuzzles();
 
   const initializePuzzle = useCallback(() => {
-    // Create 9 pieces with random positions (0-8)
-    const positions = Array.from({ length: 9 }, (_, i) => i);
+    // Create 16 pieces with random positions (0-15)
+    const positions = Array.from({ length: 16 }, (_, i) => i);
     const shuffledPositions = [...positions].sort(() => Math.random() - 0.5);
     
     const newPieces: PuzzlePiece[] = shuffledPositions.map((position, index) => ({

@@ -72,7 +72,7 @@ export default function GenericPuzzle() {
         
         <DragOverlay>
           {activeId ? (
-            <div className="w-24 h-24">
+            <div className="w-[72px] h-[72px]">
               <DraggablePuzzlePiece 
                 piece={pieces.find(p => p.id === activeId)!} 
                 puzzleImage={selectedPuzzle.image} 

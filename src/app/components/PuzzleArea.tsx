@@ -55,15 +55,15 @@ export function DroppablePuzzleArea({ pieces, puzzleImage, bgColor, isComplete =
       }`}
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gridTemplateRows: 'repeat(3, 1fr)',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gridTemplateRows: 'repeat(4, 1fr)',
         gap: '0',
         ...(isComplete && {
           boxShadow: '0 0 30px rgba(251, 191, 36, 0.6), 0 0 60px rgba(251, 191, 36, 0.3)',
         })
       }}
     >
-      {Array.from({ length: 9 }, (_, i) => {
+      {Array.from({ length: 16 }, (_, i) => {
         const piece = pieces.find(p => p.position === i && p.isPlaced);
         return (
           <DropZone 

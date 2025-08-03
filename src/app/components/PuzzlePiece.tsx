@@ -24,16 +24,16 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
   };
 
   const getPieceContent = () => {
-    const row = Math.floor(piece.id / 3);
-    const col = piece.id % 3;
+    const row = Math.floor(piece.id / 4);
+    const col = piece.id % 4;
     
     return (
       <div 
         className="w-full h-full rounded-lg overflow-hidden"
         style={{
           backgroundImage: `url(${puzzleImage})`,
-          backgroundSize: '300px 300px',
-          backgroundPosition: `-${col * 100}px -${row * 100}px`,
+          backgroundSize: '288px 288px',
+          backgroundPosition: `-${col * 72}px -${row * 72}px`,
           border: '2px solid #6B7280',
           borderRadius: '8px',
           cursor: 'grab',
@@ -50,7 +50,7 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
       style={style}
       {...attributes}
       {...listeners}
-      className="w-24 h-24"
+      className="w-[72px] h-[72px]"
     >
       {getPieceContent()}
     </div>
