@@ -49,7 +49,7 @@ export function DraggablePiecesArea({ pieces, puzzleImage }: DraggablePiecesArea
           return (
             <div 
               key={piece.id}
-              className="absolute"
+              className="absolute w-[72px] h-[72px]"
               style={{
                 left: `calc(50% + ${position.x}px)`,
                 top: `calc(50% + ${position.y}px)`,

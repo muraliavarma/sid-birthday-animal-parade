@@ -29,7 +29,7 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
     
     return (
       <div 
-        className="w-full h-full rounded-lg overflow-hidden"
+        className="w-full h-full rounded-lg overflow-hidden box-border"
         style={{
           backgroundImage: `url(${puzzleImage})`,
           backgroundSize: '288px 288px',
@@ -39,6 +39,7 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
           cursor: 'grab',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
           opacity: isDragging ? 0.5 : 1,
+          boxSizing: 'border-box',
         }}
       />
     );
@@ -50,7 +51,7 @@ export function DraggablePuzzlePiece({ piece, puzzleImage }: DraggablePuzzlePiec
       style={style}
       {...attributes}
       {...listeners}
-      className="w-[72px] h-[72px]"
+      className="w-full h-full"
     >
       {getPieceContent()}
     </div>
